@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emotion Detection</title>
+    <link rel="stylesheet" href="static/styles.css" />
+  </head>
+  <body>
+    <h1>Emotion Detection with Camera</h1>
+    <div id="camera-container">
+      <video id="camera" autoplay style="display: none"></video>
+      <button id="toggle-camera">Open Camera</button>
+      <!-- Toggle camera button -->
+      <button id="detect-emotion" style="display: none">Detect Emotion</button>
+      <!-- Detect emotion button -->
+      <p id="emotion-label">Detected Emotion: <span id="emotion"></span></p>
+    </div>
+    <div id="music-recommended">
+      <h1>Music Recommendation Based on your Emotion</h1>
+      <ul id="song-list">
+        <li></li>
+      </ul>
+    </div>
+    <script src="static/script.js"></script>
+  </body>
+</html>

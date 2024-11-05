@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emotion Detection</title>
+    <link rel="stylesheet" href="../static/style.css" />
+    <link rel="stylesheet" href="../static/bootstrap.min.css" />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='bootstrap.min.css') }}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Lato:wght@300;400;700&family=Merienda:wght@300..900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Lato", sans-serif;
+        background-color: #f4f6f9;
+        color: #333;
+        /* display: flex; */
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        overflow-y: auto;
+      }
+
+      .main-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 160px;
+        padding-top: 45px;
+        min-height: 100vh;
+        padding-bottom: 100px;
+        box-sizing: border-box;
+      }
+
+      .main-content h1 {
+        font-family: "Merienda", cursive;
+        letter-spacing: 2px;
+      }
+
+      /* Camera Styling */
+      #camera {
+        width: 100%;
+        max-width: 550px;
+        height: 350px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        margin: 20px 0;
+        object-fit: cover;
+      }
+
+      /* Button Styling */
+      button {
+        font-family: "Merienda", cursive;
+        font-size: 18px;
+        color: #ffffff;
+        background-color: #007bff;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 25px;
+        cursor: pointer;
+        margin: 10px;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      /* Song List and Emotion Display */
+      h2,
+      h3 {
+        font-family: "Merienda", cursive;
+        margin-top: 20px;
+      }
+
+      #emotion {
+        font-weight: bold;
+        color: #007bff;
+      }
+
+      #song-list {
+        list-style-type: none;
+        padding: 0;
+        margin-top: 10px;
+      }
+
+      #song-list li {
+        font-size: 18px;
+        margin: 8px 0;
+      }
+
+      #song-list a {
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+        transition: color 0.2s;
+      }
+
+      #song-list a:hover {
+        color: #0056b3;
+      }
+
+      /* Fixed Audio Player Styling */
+      #audio-player {
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        display: none; /* Initially hidden */
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+      }
+
+      #audio-player audio {
+        width: 80%;
+      }
+
+      .now-playing {
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      /* Additional Styling for Empty Song List */
+      #song-list li.no-songs {
+        color: #999;
+        font-style: italic;
+      }
+
+      /* Center Button Container */
+      .button-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="container">
+        <nav class="navbar navbar-expand-lg main-nav px-0">
+          <a href="/"
+            ><img
+              src="{{ url_for('static', filename='image/logo.png') }}"
+              alt="Face Tune"
+          /></a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#mainMenu"
+            aria-controls="mainMenu"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="icon-bar icon-bar-1"></span>
+            <span class="icon-bar icon-bar-2"></span>
+            <span class="icon-bar icon-bar-3"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="mainMenu">
+            <ul
+              class="navbar-nav ml-auto f1 d-flex justify-content-center w-100"
+            >
+              <li>
+                <a href="/">Home</a>
+              </li>
+              <li>
+                <a href="#about">About</a>
+              </li>
+              <li>
+                <a href="/recommend" class="active">Recommend</a>
+              </li>
+              <li>
+                <a href="#contact">Contact</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <!-- /.container -->
+    </header>
+
+    <!-- Main Content -->
+    <div class="container main-content mb-5">
+      <h1>Mood-Based Music Recommendations</h1>
+      <video id="camera" autoplay></video>
+
+      <!-- Buttons for Camera and Emotion Detection -->
+      <div class="button-container">
+        <button id="toggle-camera">Open Camera</button>
+        <button id="detect-emotion" style="display: none">
+          Detect Emotion
+        </button>
+      </div>
+
+      <!-- Emotion and Song List -->
+      <div>
+        <h2>Detected Emotion: <span id="emotion"></span></h2>
+        <h3>Songs:</h3>
+        <ul id="song-list"></ul>
+        <div id="audio-player">
+          <span class="now-playing"
+            >Now Playing:<span id="now-playing-title"></span
+          ></span>
+          <audio controls></audio>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const video = document.getElementById("camera");
+      const toggleButton = document.getElementById("toggle-camera");
+      const detectButton = document.getElementById("detect-emotion");
+      const emotionLabel = document.getElementById("emotion");
+      const songList = document.getElementById("song-list");
+      const audioPlayer = document.getElementById("audio-player");
+      const audioElement = audioPlayer.querySelector("audio");
+      const nowPlayingTitle = document.getElementById("now-playing-title");
+
+      let stream = null;
+
+      async function startCamera() {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          video.srcObject = stream;
+          video.style.display = "block";
+          toggleButton.textContent = "Close Camera";
+          detectButton.style.display = "inline";
+        } catch (error) {
+          console.error("Error accessing camera:", error);
+        }
+      }
+
+      function stopCamera() {
+        if (stream) {
+          stream.getTracks().forEach((track) => track.stop());
+          video.srcObject = null;
+          video.style.display = "none";
+          toggleButton.textContent = "Open Camera";
+          detectButton.style.display = "none";
+          stream = null;
+        }
+      }
+
+      toggleButton.addEventListener("click", () => {
+        if (stream) {
+          stopCamera();
+        } else {
+          startCamera();
+        }
+      });
+
+      detectButton.addEventListener("click", async () => {
+        if (stream) {
+          const canvas = document.createElement("canvas");
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          canvas
+            .getContext("2d")
+            .drawImage(video, 0, 0, canvas.width, canvas.height);
+
+          const imageBlob = await new Promise((resolve) =>
+            canvas.toBlob(resolve, "image/jpeg")
+          );
+          const formData = new FormData();
+          formData.append("frame", imageBlob, "frame.jpg");
+
+          fetch("/detect-emotion", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              emotionLabel.textContent = data.emotion;
+              populateSongList(data.emotion);
+            })
+            .catch((error) => console.error("Error:", error));
+        }
+      });
+
+      function populateSongList(emotion) {
+        fetch(`/get-songs?emotion=${emotion}`)
+          .then((response) => response.json())
+          .then((songs) => {
+            songList.innerHTML = "";
+            if (songs.length === 0) {
+              songList.innerHTML =
+                "<li class='no-songs'>No songs available for this emotion.</li>";
+            } else {
+              songs.forEach((song) => {
+                const listItem = document.createElement("li");
+                listItem.innerHTML = `<a href="#" class="song-link" data-path="${song.path}" data-title="${song.title}">${song.title}</a>`;
+                songList.appendChild(listItem);
+              });
+            }
+          })
+          .catch((error) => {
+            songList.innerHTML = "<li>Error fetching songs.</li>";
+            console.error("Error fetching songs:", error);
+          });
+      }
+
+      songList.addEventListener("click", (event) => {
+        if (event.target.classList.contains("song-link")) {
+          event.preventDefault();
+          const songPath = event.target.dataset.path;
+          const songTitle = event.target.dataset.title;
+          audioElement.src = `/static/${songPath}`;
+          nowPlayingTitle.textContent = songTitle;
+          audioPlayer.style.display = "flex";
+          audioElement
+            .play()
+            .catch((error) => console.error("Error playing audio:", error));
+        }
+      });
+    </script>
+
+    <footer class="bg-dark text-white text-center py-3">
+      <p style="padding-bottom: 70px">
+        &copy; 2024 Face Tune. All rights reserved.
+      </p>
+    </footer>
+  </body>
+</html>
