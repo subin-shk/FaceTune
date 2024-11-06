@@ -9,6 +9,11 @@
 
     <link
       rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css"
+    />
+
+    <link
+      rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
     />
     <link
@@ -20,7 +25,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Merienda:wght@300..900&family=VT323&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Caveat:wght@400..700&family=Kaushan+Script&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Merienda:wght@300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Satisfy&family=VT323&display=swap"
       rel="stylesheet"
     />
   </head>
@@ -54,7 +59,7 @@
                 <a href="/" class="active active-first">Home</a>
               </li>
               <li>
-                <a href="#about">About</a>
+                <a href="/about">About</a>
               </li>
               <li>
                 <a href="/recommend">Recommend</a>
@@ -76,7 +81,9 @@
         <h1>Experience Music Tailored to Your Emotions!</h1>
         <div class="explore">
           <p>
-            <a href="/recommend"><button>Try it now</button></a>
+            <a href="/recommend"
+              ><button class="btn-primary">Try it now</button></a
+            >
             <i>Music that matches your <strong>mood.</strong></i>
           </p>
         </div>
@@ -86,50 +93,54 @@
     <section id="about" class="container-fluid">
       <div class="row">
         <div class="col-md-6">
-          <h2 class="text-left mb-4">About Us</h2>
-          <p>
-            At FaceTune, we believe that music is a universal language capable
-            of expressing a myriad of emotions. Our innovative music
-            recommendation system harnesses the power of facial expression
-            analysis to curate personalized playlists that perfectly match your
-            current mood.
-          </p>
-          <p>
-            By utilizing advanced computer vision techniques, we interpret your
-            facial expressions in real-time. Whether you’re feeling joyful,
-            contemplative, relaxed, or energetic, FaceTune suggests tracks that
-            resonate with your emotional state, enhancing your overall listening
-            experience.
-          </p>
-          <p>
-            Join us on this exciting musical journey and discover how your
-            emotions can shape your unique music experience with FaceTune!
-          </p>
+          <h2 class="text-left mb-5 subtitle">About Us</h2>
+          <div class="mt-5" style="padding: 15px; font-size: 20px">
+            <p>
+              At FaceTune, we believe that music is a universal language capable
+              of expressing a myriad of emotions. Our innovative music
+              recommendation system harnesses the power of facial expression
+              analysis to curate personalized playlists that perfectly match
+              your current mood.
+            </p>
+
+            <p>
+              Join us on this exciting musical journey and discover how your
+              emotions can shape your unique music experience with FaceTune!
+            </p>
+          </div>
+          <a
+            href="/about"
+            class="btn-primary rounded-pill"
+            style="padding: 15px; font-size: 20px; font-weight: 500"
+            >Read More <i class="bi bi-arrow-right"></i
+          ></a>
         </div>
         <div class="col-md-6">
           <img
             src="{{ url_for('static', filename='image/about.gif') }}"
-            class="img-fluid rounded mb-3"
+            class="img-fluid rounded-pill mb-3 pt-5"
+            style="filter: grayscale(50%)"
             alt="Music Experience"
           />
         </div>
       </div>
     </section>
 
-    <div class="container">
-      <div class="header-title">All Songs</div>
-
-      <div class="row" id="song-list">
+    <div class="container all-songs">
+      <div class="d-flex justify-content-center">
+        <h2 class="subtitle text-center">All Songs</h2>
+      </div>
+      <div class="row mt-5" id="song-list">
         <!-- Songs will be dynamically added here -->
       </div>
 
       <div class="text-center pb-5">
         <button
           id="show-more-btn"
-          class="btn btn-primary"
+          class="btn btn-secondary"
           onclick="showMoreSongs()"
         >
-          Show More
+          Show More &nbsp;<i class="bi bi-caret-down-fill"></i>
         </button>
         <button
           id="show-less-btn"
@@ -137,9 +148,9 @@
           onclick="showLessSongs()"
           style="display: none"
         >
-          Show Less
+          Show Less &nbsp;<i class="bi bi-caret-up-fill"></i>
         </button>
-        <a href="/recommend" class="btn btn-primary btn-recommend"
+        <a href="/recommend" class="btn btn-primary btn-recommend ms-2"
           >Get Recommendation</a
         >
       </div>
@@ -153,7 +164,7 @@
 
     <!-- Hidden Fixed Audio Player at the Bottom -->
     <div class="audio-player" id="audio-player">
-      <span class="now-playing" id="now-playing-title">Now Playing: </span>
+      <span class="now-playing" id="now-playing-title"></span>
       <audio id="fixed-audio-player" controls>
         <source src="" type="audio/mpeg" />
         Your browser does not support the audio element.
@@ -176,8 +187,8 @@
                 songCard.innerHTML = `
                               <div class="card">
                                   <div class="card-body">
-                                      <h5 class="song-title">${song.title}</h5>
-                                      <button class="btn btn-secondary play-button" onclick="playSong('${song.path}', '${song.title}')">Play</button>
+                                      <p class="song-title text-center" style="color:#000;">${song.title}</p>
+                                      <button class="btn btn-secondary d-block mx-auto play-button text-white " onclick="playSong('${song.path}', '${song.title}')">Play &nbsp;<i class="bi bi-play-circle-fill"></i></button>
                                   </div>
                               </div>
                           `;
@@ -248,7 +259,7 @@
 
         // Set the audio source, update the title, and show the player
         audioPlayer.src = `/static/${path}`;
-        nowPlayingTitle.textContent = `Now Playing: ${title}`;
+        nowPlayingTitle.textContent = `${title}`;
         audioPlayerContainer.style.display = "flex"; // Show the audio player
         audioPlayer.play();
       }

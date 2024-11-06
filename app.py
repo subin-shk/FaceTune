@@ -50,6 +50,10 @@ def index():
 def recommend():
     return render_template("recommend.html")  # Serve recommend.html
 
+@app.route("/about")
+def about():
+    return render_template("about.html")  # Serve about.html
+
 @app.route("/detect-emotion", methods=["POST"])
 def detect_emotion():
     try:

@@ -1,5 +1,6 @@
 /* Google Fonts */
 @import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Lato:wght@100;300;400;700;900&family=Merienda:wght@300..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Alex+Brush&display=swap");
 
 /* Reset basic styling */
 * {
@@ -9,7 +10,10 @@
 }
 
 body {
-  font-family: "Lato", sans-serif;
+  font-family: "Montserrat", sans-serif !important;
+  font-optical-sizing: auto;
+  /* font-weight: <weight>; */
+  font-style: normal;
   background-color: #f4f6f9;
   color: #333;
 
@@ -18,6 +22,30 @@ body {
   min-height: 100vh;
   margin: 0;
   overflow-y: auto;
+}
+
+.subtitle {
+  display: inline;
+  /* text-align: left; */
+  position: relative;
+  font-family: "Alex Brush", cursive;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 60px;
+  margin-bottom: 10px;
+}
+
+.subtitle::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: #d35d46;
+  margin-top: 10px;
+
+  position: absolute;
+  left: 0;
+  bottom: -3px;
 }
 
 .main-content {
@@ -58,21 +86,6 @@ button {
 
 button:hover {
   background-color: #0056b3;
-}
-
-/* Detected Emotion & Song List */
-h2 {
-  font-family: "Merienda", cursive;
-  font-size: 26px;
-  color: #333;
-  margin-top: 20px;
-}
-
-h3 {
-  font-family: "Caveat", cursive;
-  font-size: 22px;
-  color: #555;
-  margin-top: 15px;
 }
 
 #emotion {
@@ -157,7 +170,7 @@ h3 {
   position: relative;
   z-index: 1;
   text-decoration: none;
-  font-family: "Merienda", serif;
+  font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
   /* font-weight: <weight>; */
   font-style: normal;
@@ -215,7 +228,7 @@ h3 {
   width: 100%;
   background: linear-gradient(
     to bottom,
-    #f79477,
+    #d78373,
     rgba(255, 255, 255, 0.8)
   ); /* Peach to Light Gray */
   /* box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15); */
@@ -390,7 +403,7 @@ h3 {
   color: white;
   letter-spacing: 2px;
   border: none;
-  background-color: #f79477;
+  /* background-color: #f79477; */
   border-radius: 30px;
   width: 180px;
   height: 50px;
@@ -441,32 +454,8 @@ h3 {
   margin: 0;
 }
 
-h2 {
-  text-align: left; /* Align text to the left */
-  position: relative;
-  font-family: "Merienda", cursive;
-  font-optical-sizing: auto;
-  /* font-weight: <weight>; */
-  font-style: normal;
-  letter-spacing: 2px;
-  margin-left: 200px;
-}
-
-h2::after {
-  content: ""; /* Required for pseudo-element */
-  display: block; /* Make it a block element */
-  width: 25%; /* Set width of the line */
-  height: 2px; /* Set height of the line */
-  background-color: #007bff; /* Line color */
-  margin-top: 10px; /* Space between heading and line */
-  /* Optional: Adjust the position of the line */
-  position: absolute; /* Position relative to the heading */
-  left: 0; /* Align to the left */
-  bottom: -5px; /* Adjust vertical position */
-}
-
 #about p {
-  font-family: "Merriweather", serif;
+  /* font-family: "Merriweather", serif; */
   color: #444;
   margin: 0;
   text-align: left;
@@ -525,5 +514,7 @@ h2::after {
 }
 .audio-player .now-playing {
   margin-right: 10px;
+  margin-left: 15px;
+  font-size: 18px;
   font-weight: bold;
 }
