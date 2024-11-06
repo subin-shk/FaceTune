@@ -23,91 +23,6 @@
       rel="stylesheet"
     />
     <style>
-      .main-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 160px;
-        padding-top: 45px;
-        min-height: 100vh;
-        padding-bottom: 100px;
-        box-sizing: border-box;
-      }
-
-      .main-content h1 {
-        font-family: "Merienda", cursive;
-        letter-spacing: 2px;
-      }
-
-      /* Camera Styling */
-      #camera {
-        width: 100%;
-        max-width: 550px;
-        height: 350px;
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        margin: 20px 0;
-        object-fit: cover;
-      }
-
-      /* Button Styling */
-      button {
-        font-family: "Merienda", cursive;
-        font-size: 18px;
-        color: #ffffff;
-        background-color: #007bff;
-        border: none;
-        border-radius: 8px;
-        padding: 12px 25px;
-        cursor: pointer;
-        margin: 10px;
-        transition: background-color 0.3s ease;
-      }
-
-      button:hover {
-        background-color: #0056b3;
-      }
-
-      #emotion {
-        font-weight: bold;
-        color: #007bff;
-      }
-
-      #song-list {
-        list-style-type: none; /* Remove default bullet points */
-        padding: 0;
-        max-width: 600px; /* Max width for the list */
-        margin: auto; /* Center the list */
-        background: #fff; /* White background for the list */
-        border-radius: 10px; /* Rounded corners */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-      }
-
-      #song-list li {
-        padding: 15px; /* Space within each list item */
-        border-bottom: 1px solid #e0e0e0; /* Light border between items */
-        transition: background-color 0.3s; /* Smooth transition for hover effect */
-      }
-
-      #song-list li:hover {
-        background-color: #f9f9f9; /* Light grey on hover */
-      }
-
-      #song-list li:last-child {
-        border-bottom: none; /* Remove border from the last item */
-      }
-
-      #song-list li::before {
-        content: "🎶"; /* Add a music note before each item */
-        margin-right: 10px; /* Space between the icon and text */
-      }
-
-      @media (max-width: 600px) {
-        #song-list {
-          width: 100%; /* Full width on smaller screens */
-        }
-      }
-
       /* Fixed Audio Player Styling */
       #audio-player {
         width: 100%;
@@ -133,12 +48,6 @@
         font-weight: bold;
         margin-left: 15px;
         margin-right: 10px;
-      }
-
-      /* Additional Styling for Empty Song List */
-      #song-list li.no-songs {
-        color: #999;
-        font-style: italic;
       }
 
       /* Center Button Container */
@@ -196,55 +105,73 @@
     </header>
 
     <!-- Main Content -->
-    <div class="container main-content mb-5">
-      <h2 class="subtitle mb-3">Mood-Based Music Recommendations</h2>
-      <video id="camera" autoplay style="display: none"></video>
-
-      <!-- Buttons for Camera and Emotion Detection -->
-      <div class="button-container">
-        <button id="toggle-camera" class="btn-secondary">Open Camera</button>
-        <button id="detect-emotion" class="btn-primary" style="display: none">
-          Detect Emotion
-        </button>
+    <section class="container" style="padding-top: 130px">
+      <div class="d-flex justify-content-center">
+        <h2 class="subtitle">Mood-Based Music Recommendations</h2>
       </div>
+      <div class="main-content container">
+        <video id="camera" autoplay style="display: none"></video>
 
-      <!-- Emotion and Song List -->
-      <div>
-        <h2
-          class="mb-2"
-          style="
-            font-family: 'Montserrat', sans-serif;
-            font-optical-sizing: auto;
-            /* font-weight: <weight>; */
-            font-style: normal;
-          "
-        >
-          Detected Emotion: <span id="emotion"></span>
-        </h2>
-        <h3
-          style="
-            font-family: 'Montserrat', sans-serif;
-            font-optical-sizing: auto;
-            /* font-weight: <weight>; */
-            font-style: normal;
-          "
-        >
-          Recommended Songs:
-        </h3>
-        <ul id="song-list"></ul>
-        <div id="audio-player">
-          <span class="now-playing"><span id="now-playing-title"></span></span>
-          <audio controls></audio>
+        <!-- Buttons for Camera and Emotion Detection -->
+        <div class="button-container">
+          <button id="toggle-camera" class="btn-secondary rounded">
+            Open Camera
+          </button>
+          <button
+            id="detect-emotion"
+            class="btn-primary rounded"
+            style="display: none"
+          >
+            Detect Emotion
+          </button>
+        </div>
+
+        <!-- Emotion and Song List -->
+        <div>
+          <h2
+            class="mb-2"
+            style="
+              font-family: 'Montserrat', sans-serif;
+              font-optical-sizing: auto;
+              /* font-weight: <weight>; */
+              font-style: normal;
+            "
+          >
+            Detected Emotion: <span id="emotion"></span>
+          </h2>
+          <h3
+            style="
+              font-family: 'Montserrat', sans-serif;
+              font-optical-sizing: auto;
+              /* font-weight: <weight>; */
+              font-style: normal;
+            "
+          >
+            Recommended Songs:
+          </h3>
+          <ul id="recsong-list"></ul>
+          <div id="audio-player">
+            <span class="now-playing"
+              ><span id="now-playing-title"></span
+            ></span>
+            <audio controls></audio>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
+
+    <footer class="bg-dark text-white text-center py-3">
+      <p style="padding-bottom: 70px">
+        &copy; 2024 Face Tune. All rights reserved.
+      </p>
+    </footer>
 
     <script>
       const video = document.getElementById("camera");
       const toggleButton = document.getElementById("toggle-camera");
       const detectButton = document.getElementById("detect-emotion");
       const emotionLabel = document.getElementById("emotion");
-      const songList = document.getElementById("song-list");
+      const songList = document.getElementById("recsong-list");
       const audioPlayer = document.getElementById("audio-player");
       const audioElement = audioPlayer.querySelector("audio");
       const nowPlayingTitle = document.getElementById("now-playing-title");
@@ -346,11 +273,5 @@
         }
       });
     </script>
-
-    <footer class="bg-dark text-white text-center py-3">
-      <p style="padding-bottom: 70px">
-        &copy; 2024 Face Tune. All rights reserved.
-      </p>
-    </footer>
   </body>
 </html>
