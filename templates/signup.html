@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FaceTune - Home</title>
+    <link rel="stylesheet" href="../static/style.css" />
+    <link rel="stylesheet" href="../static/login.css" />
+    <link rel="stylesheet" href="../static/bootstrap.min.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='login.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='bootstrap.min.css') }}"
+    />
+
+    <!--Google fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Caveat:wght@400..700&family=Croissant+One&family=Kaushan+Script&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Merienda:wght@300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Satisfy&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body
+    background="{{ url_for('static', filename='image/bg.gif') }}"
+    style="background-repeat: no-repeat; background-size: cover"
+  >
+    <div class="container loginform">
+      <form action="" method="POST" class="login">
+        <p class="login-text">Sign up</p>
+        <div class="input-group">
+          <input type="text" placeholder="Username" name="username" required />
+        </div>
+        <div class="input-group">
+          <input type="email" placeholder="Email" name="email" required />
+        </div>
+        <div class="input-group">
+          <input
+            type="password"
+            placeholder="Password"
+            name="password"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            name="cpassword"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <button type="submit" class="btn">Register</button>
+        </div>
+        <div class="return">
+          <a href="{{ url_for('index') }}">Return to Home</a>
+        </div>
+        <br />
+        <p class="login-register-text">
+          Already have an account? <a href="/login">Login Here</a>.
+        </p>
+      </form>
+    </div>
+  </body>
+</html>

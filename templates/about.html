@@ -71,5 +71,43 @@
       </div>
       <!-- /.container -->
     </header>
+
+    <section id="about" class="container-fluid mt-5">
+      <div class="row">
+        <div class="col-md-6">
+          <h2 class="text-left subtitle">About Us</h2>
+          <div class="mt-4" style="padding: 15px; font-size: 20px">
+            <p>
+              At FaceTune, we believe that music is a universal language capable
+              of expressing a myriad of emotions. Our innovative music
+              recommendation system harnesses the power of facial expression
+              analysis to curate personalized playlists that perfectly match
+              your current mood.
+            </p>
+
+            <p>
+              Join us on this exciting musical journey and discover how your
+              emotions can shape your unique music experience with FaceTune!
+            </p>
+          </div>
+</a>
+        </div>
+        <div class="col-md-6">
+          <img
+            src="{{ url_for('static', filename='image/about.gif') }}"
+            class="img-fluid rounded-pill mb-3 pt-5"
+            style="filter: grayscale(50%); height: 500px"
+            alt="Music Experience"
+          />
+        </div>
+      </div>
+    </section>
+
+    <footer class="bg-dark text-white text-center py-3">
+      <p style="padding-bottom: 70px">
+        &copy; 2024 Face Tune. All rights reserved.
+      </p>
+    </footer>
+
   </body>
 </html>

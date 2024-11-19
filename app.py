@@ -54,6 +54,14 @@ def recommend():
 def about():
     return render_template("about.html")  # Serve about.html
 
+@app.route("/login")
+def login():
+    return render_template("login.html")  
+
+@app.route("/signup")
+def signup():
+    return render_template("signup.html")  
+
 @app.route("/detect-emotion", methods=["POST"])
 def detect_emotion():
     try:
