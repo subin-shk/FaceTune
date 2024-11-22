@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, session, flash, redirect, url_for, jsonify
 import cv2
 import numpy as np
 import tensorflow as tf
@@ -9,6 +9,25 @@ import sqlite3
 import os
 
 app = Flask(__name__)
+app.secret_key = "sEcreTkEY"  # Replace with a strong secret key
+
+# Initialize the database if not exists
+def init_db():
+    conn = sqlite3.connect("musicandface.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS user (
+            user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+init_db()
+
 
 # Load the emotion detection model
 model_path = "emotiondetector.json"
@@ -54,13 +73,65 @@ def recommend():
 def about():
     return render_template("about.html")  # Serve about.html
 
-@app.route("/login")
-def login():
-    return render_template("login.html")  
-
-@app.route("/signup")
+@app.route("/signup", methods=["GET", "POST"])
 def signup():
-    return render_template("signup.html")  
+    if request.method == "POST":
+        username = request.form["username"]
+        email = request.form["email"]
+        password = request.form["password"]
+        cpassword = request.form["cpassword"]
+
+        # Validate form inputs
+        if password != cpassword:
+            flash("Passwords do not match. Please try again.", "danger")
+            return redirect(url_for("signup"))
+
+        try:
+            conn = sqlite3.connect("musicandface.db")
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO user (username, email, password) VALUES (?, ?, ?)",
+                           (username, email, password))
+            conn.commit()
+            conn.close()
+
+            flash("Account created successfully! Please log in.", "success")
+            return redirect(url_for("login"))
+        except sqlite3.IntegrityError:
+            flash("Username or email already exists. Please try again.", "danger")
+            return redirect(url_for("signup"))
+    return render_template("signup.html")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        try:
+            conn = sqlite3.connect("musicandface.db")
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM user WHERE username = ? AND password = ?", (username, password))
+            user = cursor.fetchone()
+            conn.close()
+
+            if user:
+                session["username"] = username
+                flash("Login successful!", "success")
+                return redirect(url_for("recommend"))
+            else:
+                flash("Invalid username or password. Please try again.", "danger")
+        except sqlite3.Error as e:
+            flash(f"Database error: {e}", "danger")
+            return redirect(url_for("login"))
+
+    return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+    session.pop("username", None)
+    flash("You have been logged out.", "info")
+    return redirect(url_for("login"))
+
 
 @app.route("/detect-emotion", methods=["POST"])
 def detect_emotion():
