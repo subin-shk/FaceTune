@@ -30,6 +30,14 @@
     />
   </head>
   <body>
+    <!-- Popup container for login message -->
+    <div id="popup-message" class="popup hidden">
+      <div class="popup-content">
+        <span class="close-btn" onclick="closePopup()">&times;</span>
+        <p id="popup-text"></p>
+      </div>
+    </div>
+
     <header class="main-header">
       <div class="container">
         <nav class="navbar navbar-expand-lg main-nav px-0">
@@ -205,107 +213,116 @@
     </div>
 
     <script>
-          document.addEventListener("DOMContentLoaded", function () {
-            const flashMessages = {{ get_flashed_messages(with_categories=true) | tojson }};
-      if (flashMessages.length > 0) {
-        flashMessages.forEach(([category, message]) => {
-          if (category === "success") {
-            alert(message); // Display popup for success
-          }
-        });
+        function showPopup(message) {
+        const popup = document.getElementById('popup-message');
+        const popupText = document.getElementById('popup-text');
+        popupText.textContent = message;
+        popup.classList.remove('hidden');
       }
 
+      // Function to close the popup
+      function closePopup() {
+        document.getElementById('popup-message').classList.add('hidden');
+      }
 
-            fetch("/get-songs")
-              .then((response) => response.json())
-              .then((songs) => {
-                const songList = document.getElementById("song-list");
-                if (songs.length === 0) {
-                  songList.innerHTML =
-                    "<p class='text-center'>No songs available in the database.</p>";
-                } else {
-                  songs.forEach((song) => {
-                    const songCard = document.createElement("div");
-                    songCard.className = "col-md-4 song-card";
-                    songCard.innerHTML = `
-                                  <div class="card">
-                                      <div class="card-body">
-                                          <p class="song-title text-center" style="color:#000;">${song.title}</p>
-                                          <button class="btn btn-secondary d-block mx-auto play-button text-white " onclick="playSong('${song.path}', '${song.title}')">Play &nbsp;<i class="bi bi-play-circle-fill"></i></button>
-                                      </div>
-                                  </div>
-                              `;
-                    songCard.style.display = "none"; // Initially hide all songs
-                    songList.appendChild(songCard);
-                  });
-                  // Show the first set of songs (6 in this case)
-                  showMoreSongs();
-                }
-              })
-              .catch((error) => {
-                console.error("Error fetching songs:", error);
-                document.getElementById("song-list").innerHTML =
-                  "<p class='text-center'>Error loading songs.</p>";
-              });
-          });
+      // Trigger the popup if there's a flashed message
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          showPopup("{{ messages[0] }}");
+        {% endif %}
+      {% endwith %}
 
-          let currentSongIndex = 0; // Track the current index of the song being shown
-          const songsPerPage = 6; // Number of songs to show per click
+        document.addEventListener("DOMContentLoaded", function () {
+          fetch("/get-songs")
+            .then((response) => response.json())
+            .then((songs) => {
+              const songList = document.getElementById("song-list");
+              if (songs.length === 0) {
+                songList.innerHTML =
+                  "<p class='text-center'>No songs available in the database.</p>";
+              } else {
+                songs.forEach((song) => {
+                  const songCard = document.createElement("div");
+                  songCard.className = "col-md-4 song-card";
+                  songCard.innerHTML = `
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <p class="song-title text-center" style="color:#000;">${song.title}</p>
+                                            <button class="btn btn-secondary d-block mx-auto play-button text-white " onclick="playSong('${song.path}', '${song.title}')">Play &nbsp;<i class="bi bi-play-circle-fill"></i></button>
+                                        </div>
+                                    </div>
+                                `;
+                  songCard.style.display = "none"; // Initially hide all songs
+                  songList.appendChild(songCard);
+                });
+                // Show the first set of songs (6 in this case)
+                showMoreSongs();
+              }
+            })
+            .catch((error) => {
+              console.error("Error fetching songs:", error);
+              document.getElementById("song-list").innerHTML =
+                "<p class='text-center'>Error loading songs.</p>";
+            });
+        });
 
-          function showMoreSongs() {
-            const songCards = document.querySelectorAll(".song-card");
-            let newSongsShown = 0;
+        let currentSongIndex = 0; // Track the current index of the song being shown
+        const songsPerPage = 6; // Number of songs to show per click
 
-            for (
-              let i = currentSongIndex;
-              i < currentSongIndex + songsPerPage && i < songCards.length;
-              i++
-            ) {
-              songCards[i].style.display = "block"; // Show the song
-              newSongsShown++;
-            }
+        function showMoreSongs() {
+          const songCards = document.querySelectorAll(".song-card");
+          let newSongsShown = 0;
 
-            currentSongIndex += newSongsShown;
-
-            if (currentSongIndex >= songCards.length) {
-              document.getElementById("show-more-btn").style.display = "none"; // Hide Show More button if all songs are shown
-            }
-            if (currentSongIndex > songsPerPage) {
-              document.getElementById("show-less-btn").style.display =
-                "inline-block"; // Show Show Less button if more than initial songs are shown
-            }
+          for (
+            let i = currentSongIndex;
+            i < currentSongIndex + songsPerPage && i < songCards.length;
+            i++
+          ) {
+            songCards[i].style.display = "block"; // Show the song
+            newSongsShown++;
           }
 
-          function showLessSongs() {
-            const songCards = document.querySelectorAll(".song-card");
+          currentSongIndex += newSongsShown;
 
-            // Ensure that we always show at least 6 songs
-            const minSongsToShow = Math.max(currentSongIndex - songsPerPage, 6);
+          if (currentSongIndex >= songCards.length) {
+            document.getElementById("show-more-btn").style.display = "none"; // Hide Show More button if all songs are shown
+          }
+          if (currentSongIndex > songsPerPage) {
+            document.getElementById("show-less-btn").style.display =
+              "inline-block"; // Show Show Less button if more than initial songs are shown
+          }
+        }
 
-            for (let i = minSongsToShow; i < currentSongIndex; i++) {
-              songCards[i].style.display = "none"; // Hide the song
-            }
+        function showLessSongs() {
+          const songCards = document.querySelectorAll(".song-card");
 
-            currentSongIndex = minSongsToShow;
+          // Ensure that we always show at least 6 songs
+          const minSongsToShow = Math.max(currentSongIndex - songsPerPage, 6);
 
-            // Show less button only if more than 6 songs are currently visible
-            if (currentSongIndex <= 6) {
-              document.getElementById("show-less-btn").style.display = "none"; // Hide Show Less button if only 6 songs are shown
-            }
-            document.getElementById("show-more-btn").style.display = "inline-block"; // Show Show More button
+          for (let i = minSongsToShow; i < currentSongIndex; i++) {
+            songCards[i].style.display = "none"; // Hide the song
           }
 
-          function playSong(path, title) {
-            const audioPlayerContainer = document.getElementById("audio-player");
-            const audioPlayer = document.getElementById("fixed-audio-player");
-            const nowPlayingTitle = document.getElementById("now-playing-title");
+          currentSongIndex = minSongsToShow;
 
-            // Set the audio source, update the title, and show the player
-            audioPlayer.src = `/static/${path}`;
-            nowPlayingTitle.textContent = `${title}`;
-            audioPlayerContainer.style.display = "flex"; // Show the audio player
-            audioPlayer.play();
+          // Show less button only if more than 6 songs are currently visible
+          if (currentSongIndex <= 6) {
+            document.getElementById("show-less-btn").style.display = "none"; // Hide Show Less button if only 6 songs are shown
           }
+          document.getElementById("show-more-btn").style.display = "inline-block"; // Show Show More button
+        }
+
+        function playSong(path, title) {
+          const audioPlayerContainer = document.getElementById("audio-player");
+          const audioPlayer = document.getElementById("fixed-audio-player");
+          const nowPlayingTitle = document.getElementById("now-playing-title");
+
+          // Set the audio source, update the title, and show the player
+          audioPlayer.src = `/static/${path}`;
+          nowPlayingTitle.textContent = `${title}`;
+          audioPlayerContainer.style.display = "flex"; // Show the audio player
+          audioPlayer.play();
+        }
     </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>

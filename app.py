@@ -67,6 +67,14 @@ def index():
 
 @app.route("/recommend")
 def recommend():
+    # Check if the user is logged in
+    if not session.get("username"):
+        # Flash a message indicating login is required
+        flash("Login first for recommendation.")
+        # Redirect to the login page
+        return redirect(url_for("login"))
+
+    # If logged in, render the recommend page
     return render_template("recommend.html")  # Serve recommend.html
 
 @app.route("/about")
