@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, flash, redirect, url_for, jsonify
+from flask import Flask, render_template, request, session, flash, redirect, url_for, jsonify, make_response
 import cv2
 import numpy as np
 import tensorflow as tf
@@ -61,6 +61,8 @@ def preprocess_image(image):
         print(f"Error in image preprocessing: {e}")
     return None
 
+
+
 @app.route("/")
 def index():
     return render_template("index.html")  # Serve index.html
@@ -70,7 +72,7 @@ def recommend():
     # Check if the user is logged in
     if not session.get("username"):
         # Flash a message indicating login is required
-        flash("Login first for recommendation.")
+        flash("Login first for Recommendation.")
         # Redirect to the login page
         return redirect(url_for("login"))
 
@@ -136,9 +138,18 @@ def login():
 
 @app.route("/logout")
 def logout():
+    session.clear()
     session.pop("username", None)
     flash("You have been logged out.", "info")
     return redirect(url_for("login"))
+
+# For logout even after moving back from browser
+@app.after_request
+def add_cache_control(response):
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 
 @app.route("/detect-emotion", methods=["POST"])

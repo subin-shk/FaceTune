@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FaceTune - Home</title>
+    <title>FaceTune - Signup</title>
     <link rel="stylesheet" href="../static/style.css" />
     <link rel="stylesheet" href="../static/login.css" />
     <link rel="stylesheet" href="../static/bootstrap.min.css" />
@@ -33,6 +33,78 @@
       href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Caveat:wght@400..700&family=Croissant+One&family=Kaushan+Script&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Merienda:wght@300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Satisfy&family=VT323&display=swap"
       rel="stylesheet"
     />
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+
+    <script>
+      // Function to validate the form
+      function validateForm(event) {
+        // Prevent form submission
+        event.preventDefault();
+
+        // Get form fields and validation message elements
+        const username = document.getElementById("username");
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+        const cpassword = document.getElementById("cpassword");
+
+        const usernameMsg = document.getElementById("username-msg");
+        const emailMsg = document.getElementById("email-msg");
+        const passwordMsg = document.getElementById("password-msg");
+        const cpasswordMsg = document.getElementById("cpassword-msg");
+
+        let isValid = true;
+
+        // Clear all previous messages
+        usernameMsg.style.display = "none";
+        emailMsg.style.display = "none";
+        passwordMsg.style.display = "none";
+        cpasswordMsg.style.display = "none";
+
+        // Username validation
+        if (!username.value.trim()) {
+          usernameMsg.textContent = "Username is required.";
+          usernameMsg.style.display = "block";
+          isValid = false;
+        }
+
+        // Email validation
+        if (!email.value.trim()) {
+          emailMsg.textContent = "Email is required.";
+          emailMsg.style.display = "block";
+          isValid = false;
+        }
+
+        // Password validation
+        if (!password.value.trim()) {
+          passwordMsg.textContent = "Password is required.";
+          passwordMsg.style.display = "block";
+          isValid = false;
+        } else if (password.value.trim().length < 6) {
+          passwordMsg.textContent =
+            "Password must be at least 6 characters long.";
+          passwordMsg.style.display = "block";
+          isValid = false;
+        }
+
+        // Confirm Password validation
+        if (!cpassword.value.trim()) {
+          cpasswordMsg.textContent = "Confirm Password is required.";
+          cpasswordMsg.style.display = "block";
+          isValid = false;
+        } else if (password.value.trim() !== cpassword.value.trim()) {
+          cpasswordMsg.textContent = "Passwords do not match.";
+          cpasswordMsg.style.display = "block";
+          isValid = false;
+        }
+
+        // If all validations pass, submit the form
+        if (isValid) {
+          document.forms["signupForm"].submit();
+        }
+      }
+    </script>
   </head>
   <body
     background="{{ url_for('static', filename='image/bg.gif') }}"
@@ -56,30 +128,56 @@
       </div>
       {% endfor %} {% endif %} {% endwith %}
 
-      <form action="" method="POST" class="login">
+      <form
+        name="signupForm"
+        action=""
+        method="POST"
+        class="login"
+        onsubmit="validateForm(event)"
+        novalidate
+      >
         <p class="login-text">Sign up</p>
         <div class="input-group">
-          <input type="text" placeholder="Username" name="username" required />
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Username"
+            required
+          />
+          <span id="username-msg" class="validation-message"></span>
         </div>
         <div class="input-group">
-          <input type="email" placeholder="Email" name="email" required />
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Email"
+            required
+          />
+          <span id="email-msg" class="validation-message"></span>
         </div>
         <div class="input-group">
           <input
             type="password"
-            placeholder="Password"
+            id="password"
             name="password"
+            placeholder="Password"
             required
           />
+          <span id="password-msg" class="validation-message"></span>
         </div>
         <div class="input-group">
           <input
             type="password"
-            placeholder="Confirm Password"
+            id="cpassword"
             name="cpassword"
+            placeholder="Confirm Password"
             required
           />
+          <span id="cpassword-msg" class="validation-message"></span>
         </div>
+
         <div class="input-group">
           <button type="submit" class="btn">Register</button>
         </div>
