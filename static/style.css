@@ -505,6 +505,7 @@ button:hover {
   padding: 40px;
   text-align: center;
   margin: 0;
+  padding-top: 130px;
 }
 
 #about p {
@@ -525,6 +526,115 @@ button:hover {
 #about img {
   max-width: 100%; /* Ensure the image is responsive */
   height: auto; /* Maintain aspect ratio */
+  padding-top: 50px;
+}
+
+#recommend-steps {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers the container horizontally */
+  justify-content: center; /* Centers the container vertically */
+  max-width: 1000px;
+  padding: 40px;
+  margin: 20px auto 90px auto;
+  border: 1px solid #939393;
+  box-shadow: 20px 20px 20px 0px rgba(0, 0, 0, 0.08);
+  background-color: #ebebeb;
+  border-radius: 12px;
+}
+
+#recommend-steps h1 {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 24px;
+  text-align: center; /* Center aligns the heading */
+}
+
+#recommend-steps ol {
+  padding-left: 0;
+  list-style: none; /* Removes default list styling */
+  width: 100%; /* Makes the list take full width */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#recommend-steps li {
+  display: flex;
+  flex-direction: row; /* Aligns the number and text side by side */
+  align-items: center; /* Vertically centers number and text */
+  justify-content: flex-start; /* Keeps the number and text left-aligned */
+  width: 80%; /* Set consistent width for list items */
+  margin: 24px auto; /* Centers the <li> horizontally */
+  font-size: 18px; /* Increased font size */
+  line-height: 1.6;
+  text-align: left; /* Left-aligns the text content */
+  position: relative;
+}
+
+#recommend-steps li strong {
+  font-size: 20px; /* Increased font size for strong text */
+  color: #292929;
+}
+
+#recommend-steps li p {
+  font-weight: normal;
+  font-size: 16px;
+  margin: 8px 0 0;
+}
+
+#recommend-steps li a {
+  text-decoration: none;
+  font-weight: bold;
+  color: #d35d46;
+  position: relative;
+  padding-bottom: 3px;
+}
+
+#recommend-steps li a:hover::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px; /* Thickness of the underline */
+  background-color: #d35d46; /* Color of the underline */
+  transform: scaleX(1); /* Underline visible on hover */
+  transform-origin: left; /* Animation grows from left */
+  transition: transform 0.3s ease-in-out;
+}
+
+#recommend-steps li:before {
+  content: counter(step-counter);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  width: 48px;
+  border-radius: 50%;
+  border: 3px solid #ddd;
+  margin-right: 25px; /* Space between number and text */
+  font-size: 18px;
+  font-weight: bold;
+  color: #292929;
+  background-color: #fff;
+}
+
+#recommend-steps ol {
+  counter-reset: step-counter;
+}
+
+#recommend-steps li {
+  counter-increment: step-counter;
+}
+
+#recommend-steps ol.alternating-colors li:nth-child(odd):before {
+  border-color: #0bad02;
+}
+
+#recommend-steps ol.alternating-colors li:nth-child(even):before {
+  border-color: #2378d5;
 }
 
 /* FOR ALL SONGS IN INDEX */

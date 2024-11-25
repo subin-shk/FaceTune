@@ -9,12 +9,23 @@
 
     <link
       rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css"
+    />
+
+    <link
+      rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
     />
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='bootstrap.min.css') }}"
     />
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <!--Google fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -82,9 +93,7 @@
             <span class="icon-bar icon-bar-3"></span>
           </button>
           <div class="collapse navbar-collapse" id="mainMenu">
-            <ul
-              class="navbar-nav ml-auto f1 d-flex justify-content-center w-100"
-            >
+            <ul class="navbar-nav mx-auto d-flex justify-content-center w-100">
               <li>
                 <a href="/">Home</a>
               </li>
@@ -94,6 +103,44 @@
               <li>
                 <a href="/recommend" class="active">Recommend</a>
               </li>
+            </ul>
+            <!-- Login on the right -->
+            <ul class="navbar-nav ml-auto">
+              {% if session.get('username') %}
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  id="userDropdown"
+                  role="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <i class="bi bi-person"></i>&nbsp;<i
+                    >{{ session['username'] }}</i
+                  >
+                </a>
+                <div
+                  class="dropdown-menu dropdown-menu-right"
+                  aria-labelledby="userDropdown"
+                  style="transform: translate(0, 10px)"
+                >
+                  <a
+                    class="dropdown-item"
+                    href="/logout"
+                    style="text-align: center"
+                    >Logout&nbsp;&nbsp;<i class="bi bi-box-arrow-left"></i
+                  ></a>
+                </div>
+              </li>
+              {% else %}
+              <li>
+                <a href="/login" class="d-flex align-items-center">
+                  Login&nbsp;&nbsp;<i class="bi bi-box-arrow-in-right ml-4"></i>
+                </a>
+              </li>
+              {% endif %}
             </ul>
           </div>
         </nav>
@@ -107,12 +154,19 @@
         <h2 class="subtitle">Mood-Based Music Recommendations</h2>
       </div>
       <div class="main-content container">
+        <i
+          >Unsure about what to do? Check out the
+          <a href="/about#recommend-steps"
+            ><u><strong>steps</strong></u></a
+          >
+          to receive personalized music recommendations</i
+        >
         <video id="camera" autoplay style="display: none"></video>
 
         <!-- Buttons for Camera and Emotion Detection -->
         <div class="button-container">
           <button id="toggle-camera" class="btn-secondary rounded">
-            Open Camera
+            Open Camera <i class="bi bi-camera-video"></i>
           </button>
           <button
             id="detect-emotion"
@@ -180,7 +234,8 @@
           stream = await navigator.mediaDevices.getUserMedia({ video: true });
           video.srcObject = stream;
           video.style.display = "block";
-          toggleButton.textContent = "Close Camera";
+          toggleButton.innerHTML =
+            "Close Camera <i class='bi bi-camera-video-off'></i>";
           detectButton.style.display = "inline";
         } catch (error) {
           console.error("Error accessing camera:", error);
@@ -192,7 +247,8 @@
           stream.getTracks().forEach((track) => track.stop());
           video.srcObject = null;
           video.style.display = "none";
-          toggleButton.textContent = "Open Camera";
+          toggleButton.innerHTML =
+            "Open Camera <i class='bi bi-camera-video'></i>";
           detectButton.style.display = "none";
           stream = null;
         }
