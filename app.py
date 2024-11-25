@@ -117,7 +117,7 @@ def login():
             if user:
                 session["username"] = username
                 flash("Login successful!", "success")
-                return redirect(url_for("recommend"))
+                return redirect(url_for("index"))
             else:
                 flash("Invalid username or password. Please try again.", "danger")
         except sqlite3.Error as e:

@@ -70,5 +70,19 @@
         </p>
       </form>
     </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Flash message logic
+        const flashMessages = {{ get_flashed_messages(with_categories=true) | tojson }};
+        if (flashMessages.length > 0) {
+          flashMessages.forEach(([category, message]) => {
+            if (category === "success") {
+              alert(message); // Display popup for success
+            }
+          });
+        }
+      });
+    </script>
   </body>
 </html>
