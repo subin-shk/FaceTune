@@ -20,7 +20,8 @@ def init_db():
             user_id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE NOT NULL,
             email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL
+            password TEXT NOT NULL,
+            user_type TEXT NOT NULL DEFAULT 'user'
         )
     """)
     conn.commit()
@@ -120,14 +121,20 @@ def login():
         try:
             conn = sqlite3.connect("musicandface.db")
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM user WHERE username = ? AND password = ?", (username, password))
+            cursor.execute("SELECT user_type FROM user WHERE username = ? AND password = ?", (username, password))
             user = cursor.fetchone()
             conn.close()
 
             if user:
                 session["username"] = username
+                session["user_type"] = user[0]  # Store user_type in session
                 flash("Login successful!", "success")
-                return redirect(url_for("index"))
+
+                # Redirect based on user_type
+                if user[0] == "admin":
+                    return redirect(url_for("admin_dashboard"))
+                else:
+                    return redirect(url_for("index"))
             else:
                 flash("Invalid username or password. Please try again.", "danger")
         except sqlite3.Error as e:
@@ -135,6 +142,34 @@ def login():
             return redirect(url_for("login"))
 
     return render_template("login.html")
+
+
+@app.route("/admin/admin-dashboard")
+def admin_dashboard():
+    # Check if the user is logged in and has admin privileges
+    if session.get("user_type") == "admin":
+        try:
+            conn = sqlite3.connect("musicandface.db")
+            cursor = conn.cursor()
+
+            # Count the number of users
+            cursor.execute("SELECT COUNT(*) FROM user")
+            user_count = cursor.fetchone()[0]
+
+            # Count the number of songs
+            cursor.execute("SELECT COUNT(*) FROM songs")
+            song_count = cursor.fetchone()[0]
+
+            conn.close()
+        except sqlite3.Error as e:
+            flash(f"Database error: {e}", "danger")
+            return redirect(url_for("login"))
+
+        return render_template("admin/admin-dashboard.html", user_count=user_count, song_count=song_count)
+    else:
+        flash("Access denied. Admins only.", "danger")
+        return redirect(url_for("login"))
+
 
 @app.route("/logout")
 def logout():

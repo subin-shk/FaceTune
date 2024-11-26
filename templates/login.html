@@ -65,13 +65,12 @@
           passwordMsg.textContent = "Password is required.";
           passwordMsg.style.display = "block";
           isValid = false;
+        } else if (password.value.length < 6) {
+          passwordMsg.textContent =
+            "Password must be at least 6 characters long.";
+          passwordMsg.style.display = "block";
+          isValid = false;
         }
-        //  else if (password.value.length < 6) {
-        //   passwordMsg.textContent =
-        //     "Password must be at least 6 characters long.";
-        //   passwordMsg.style.display = "block";
-        //   isValid = false;
-        // }
 
         // Submit the form if all validations pass
         if (isValid) {

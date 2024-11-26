@@ -499,6 +499,10 @@ button:hover {
   }
 }
 
+.all-songs {
+  margin-top: 100px;
+}
+
 /* About Section */
 #about {
   /* background: #e0e0e0;  */
