@@ -171,6 +171,62 @@ def admin_dashboard():
         return redirect(url_for("login"))
 
 
+@app.route("/edit-song/<int:song_id>", methods=["GET", "POST"])
+def edit_song(song_id):
+    try:
+        conn = sqlite3.connect("musicandface.db")
+        cursor = conn.cursor()
+
+        # Fetch song details
+        cursor.execute("SELECT * FROM songs WHERE id = ?", (song_id,))
+        song = cursor.fetchone()
+
+        if not song:
+            flash("Song not found.", "danger")
+            return redirect(url_for("view_songs"))
+
+        if request.method == "POST":
+            title = request.form["title"]
+            emotion = request.form["emotion"]
+            path = request.form["path"]
+
+            # Update the song in the database
+            cursor.execute("UPDATE songs SET title = ?, emotion = ?, path = ? WHERE id = ?",
+                           (title, emotion, path, song_id))
+            conn.commit()
+            conn.close()
+
+            flash("Song updated successfully!", "success")
+            return redirect(url_for("view_songs"))
+
+        conn.close()
+        return render_template("admin/edit-song.html", song=song)
+
+    except sqlite3.Error as e:
+        flash(f"Database error: {e}", "danger")
+        return redirect(url_for("view_songs"))
+
+
+@app.route("/view-songs")
+def view_songs():
+    if session.get("user_type") != "admin":
+        flash("Access denied. Admins only.", "danger")
+        return redirect(url_for("login"))
+
+    try:
+        conn = sqlite3.connect("musicandface.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM songs")
+        songs = cursor.fetchall()
+        conn.close()
+
+        return render_template("admin/view-songs.html", songs=songs)
+    except sqlite3.Error as e:
+        flash(f"Database error: {e}", "danger")
+        return redirect(url_for("admin_dashboard"))
+
+
+
 @app.route("/logout")
 def logout():
     session.clear()
