@@ -10,11 +10,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install jq
+        run: sudo apt-get install jq
+
       - name: Check if user is an administrator
         run: |
-          if [[ "$(curl -s -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
-          https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }} \
-          | jq -r '.role')" != "admin" ]]; then
+          response=$(curl -s -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }})
+          echo "API Response: $response"
+          if [[ "$(echo "$response" | jq -r '.message')" == "Not Found" ]]; then
+            echo "Error: User is not a collaborator, cannot check role."
+            exit 1
+          fi
+          role=$(echo "$response" | jq -r '.role')
+          if [[ "$role" != "admin" ]]; then
             echo "Error: You do not have permission to push directly to the main branch."
             exit 1
           fi
