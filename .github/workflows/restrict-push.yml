@@ -1,0 +1,20 @@
+name: Restrict Direct Pushes to Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  restrict_push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if user is an administrator
+        run: |
+          if [[ "$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/collaborators/${{ github.actor }} \
+          | jq -r '.role')" != "admin" ]]; then
+            echo "Error: You do not have permission to push directly to the main branch."
+            exit 1
+          fi
