@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Users</title>
+    <link
+      href="{{ url_for('static', filename='bootstrap.min.css') }}"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='admin.css') }}"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h2>Admin Panel</h2>
+      <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('view_users') }}">View Users</a>
+      <a href="{{ url_for('view_songs') }}">View Songs</a>
+      <a href="{{ url_for('add_songs') }}">Add Songs</a>
+      <a class="dropdown-item" href="../logout" style="text-align: center"
+        >Logout&nbsp;&nbsp;<i class="bi bi-box-arrow-left"></i
+      ></a>
+    </div>
+
+    <div class="container">
+      <h1 class="mb-4">View Users</h1>
+      <div id="user-list">
+        {% for user in users %}
+        <div class="user-box">
+          <div class="user-details">
+            <p><strong>Username:</strong> {{ user['username'] }}</p>
+            <p><strong>Email:</strong> {{ user['email'] }}</p>
+          </div>
+          <button
+            class="delete-btn"
+            onclick="deleteUser({{ user['user_id'] }})"
+          >
+            Delete
+          </button>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <script>
+      function deleteUser(userId) {
+        if (confirm("Are you sure you want to delete this user?")) {
+          // Make an AJAX request to delete the user
+          $.ajax({
+            url: "/admin/delete-user/" + userId,
+            type: "DELETE",
+            success: function (response) {
+              alert(response.message);
+              location.reload(); // Reload the page to update the user list
+            },
+            error: function (error) {
+              alert("Error: Unable to delete user.");
+              console.error(error);
+            },
+          });
+        }
+      }
+    </script>
+  </body>
+</html>

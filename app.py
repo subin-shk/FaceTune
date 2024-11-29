@@ -169,6 +169,154 @@ def admin_dashboard():
     else:
         flash("Access denied. Admins only.", "danger")
         return redirect(url_for("login"))
+    
+
+@app.route("/admin/view-users")
+def view_users():
+    if session.get("user_type") == "admin":
+        try:
+            conn = sqlite3.connect("musicandface.db")
+            conn.row_factory = sqlite3.Row  # Return rows as dictionaries
+            cursor = conn.cursor()
+
+            cursor.execute("SELECT user_id, username, email FROM user")
+            users = cursor.fetchall()
+            conn.close()
+
+            return render_template("admin/view-user.html", users=users)
+        except sqlite3.Error as e:
+            flash(f"Database error: {e}", "danger")
+            return redirect(url_for("admin_dashboard"))
+    else:
+        flash("Access denied. Admins only.", "danger")
+        return redirect(url_for("login"))
+
+
+@app.route("/admin/delete-user/<int:user_id>", methods=["DELETE"])
+def delete_user(user_id):
+    if session.get("user_type") == "admin":
+        try:
+            conn = sqlite3.connect("musicandface.db")
+            cursor = conn.cursor()
+
+            cursor.execute("DELETE FROM user WHERE user_id = ?", (user_id,))
+            conn.commit()
+            conn.close()
+
+            return jsonify({"message": "User deleted successfully."}), 200
+        except sqlite3.Error as e:
+            return jsonify({"message": f"Error deleting user: {e}"}), 500
+    else:
+        return jsonify({"message": "Access denied."}), 403
+
+@app.route("/admin/view-songs")
+def view_songs():
+    if session.get("user_type") == "admin":
+        try:
+            conn = sqlite3.connect("musicandface.db")
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+
+            # Query to fetch songs grouped by emotion
+            cursor.execute("SELECT emotion, title, path, id FROM songs")
+            songs = cursor.fetchall()
+            conn.close()
+
+            # Group songs by emotion
+            grouped_songs = {}
+            for song in songs:
+                emotion = song["emotion"]
+                if emotion not in grouped_songs:
+                    grouped_songs[emotion] = []
+                grouped_songs[emotion].append(song)
+
+            return render_template("admin/view-songs.html", grouped_songs=grouped_songs)
+        except sqlite3.Error as e:
+            flash(f"Database error: {e}", "danger")
+            return redirect(url_for("admin_dashboard"))
+    else:
+        flash("Access denied. Admins only.", "danger")
+        return redirect(url_for("login"))
+
+
+@app.route("/admin/edit-song/<int:song_id>", methods=["GET", "POST"])
+def edit_song(song_id):
+    if session.get("user_type") == "admin":
+        conn = sqlite3.connect("musicandface.db")
+        conn.row_factory = sqlite3.Row  # This makes rows accessible as dictionaries
+        cursor = conn.cursor()
+
+        if request.method == "POST":
+            title = request.form["title"]
+            emotion = request.form["emotion"]
+
+            try:
+                cursor.execute("UPDATE songs SET title = ?, emotion = ? WHERE id = ?", (title, emotion, song_id))
+                conn.commit()
+                flash("Song updated successfully.", "success")
+                return redirect(url_for("view_songs"))
+            except sqlite3.Error as e:
+                flash(f"Error updating song: {e}", "danger")
+            finally:
+                conn.close()
+
+        else:  # GET request
+            cursor.execute("SELECT id, title, emotion FROM songs WHERE id = ?", (song_id,))
+            song = cursor.fetchone()  # Fetch the specific song as a dictionary
+            conn.close()
+
+            if song:
+                return render_template("admin/edit-songs.html", song=song)
+            else:
+                flash("Song not found.", "danger")
+                return redirect(url_for("view_songs"))
+    else:
+        flash("Access denied. Admins only.", "danger")
+        return redirect(url_for("login"))
+
+
+@app.route("/admin/delete-song/<int:song_id>", methods=["POST"])
+def delete_song(song_id):
+    try:
+        conn = sqlite3.connect("musicandface.db")
+        cursor = conn.cursor()
+
+        # Delete song from database using its ID
+        cursor.execute("DELETE FROM songs WHERE id = ?", (song_id,))
+        conn.commit()
+        conn.close()
+
+        flash("Song deleted successfully!", "success")
+    except sqlite3.Error as e:
+        flash(f"Error deleting song: {e}", "danger")
+
+    return redirect(url_for("view_songs"))
+
+
+
+@app.route("/admin/add-song", methods=["GET", "POST"])
+def add_songs():
+    if request.method == "POST":
+        title = request.form["title"]
+        emotion = request.form["emotion"]
+        path = request.form["path"]
+
+        try:
+            conn = sqlite3.connect("musicandface.db")
+            cursor = conn.cursor()
+
+            cursor.execute("INSERT INTO songs (title, emotion, path) VALUES (?, ?, ?)", (title, emotion, path))
+            conn.commit()
+            conn.close()
+
+            flash("Song added successfully!", "success")
+            return redirect(url_for("view_songs"))
+        except sqlite3.Error as e:
+            flash(f"Database error: {e}", "danger")
+            return redirect(url_for("add_songs"))
+
+    return render_template("admin/add-songs.html")
+
 
 
 @app.route("/logout")

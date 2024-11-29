@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard</title>
+    <title>Edit Song</title>
 
     <link
       rel="stylesheet"
@@ -44,17 +44,36 @@
       ></a>
     </div>
 
-    <!-- Main Content -->
-    <div class="content">
-      <h1>Admin Dashboard</h1>
-      <p>
-        Welcome to the admin dashboard. Use the navigation bar to explore the
-        features.
-      </p>
-      <div class="dashboard-box">
-        <p><strong>Number of Users:</strong> {{ user_count }}</p>
-        <p><strong>Number of Songs:</strong> {{ song_count }}</p>
-      </div>
+    <div class="container mt-5">
+      <h1>Edit Song</h1>
+      <form
+        method="POST"
+        action="{{ url_for('edit_song', song_id=song['id']) }}"
+      >
+        <div class="mb-3">
+          <label for="title" class="form-label">Song Title</label>
+          <input
+            type="text"
+            class="form-control"
+            id="title"
+            name="title"
+            value="{{ song['title'] }}"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for="emotion" class="form-label">Emotion</label>
+          <input
+            type="text"
+            class="form-control"
+            id="emotion"
+            name="emotion"
+            value="{{ song['emotion'] }}"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </form>
     </div>
   </body>
 </html>

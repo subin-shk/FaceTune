@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Songs</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='bootstrap.min.css') }}"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='admin.css') }}"
+    />
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!--Google fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Caveat:wght@400..700&family=Croissant+One&family=Kaushan+Script&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Merienda:wght@300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Satisfy&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h2>Admin Panel</h2>
+      <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('view_users') }}">View Users</a>
+      <a href="{{ url_for('view_songs') }}">View Songs</a>
+      <a href="{{ url_for('add_songs') }}">Add Songs</a>
+      <a class="dropdown-item" href="../logout" style="text-align: center"
+        >Logout&nbsp;&nbsp;<i class="bi bi-box-arrow-left"></i
+      ></a>
+    </div>
+
+    <div class="container mt-4">
+      <h1 class="text-center">View Songs by Emotion</h1>
+
+      {% for emotion, songs in grouped_songs.items() %}
+      <div class="emotion-box mt-4">
+        <h2 class="emotion-title">{{ emotion.capitalize() }} Songs</h2>
+        <div class="song-container">
+          {% for song in songs %}
+          <div class="song-box">
+            <div class="song-details">
+              <h5>{{ song['title'] }}</h5>
+              <p><strong>Emotion:</strong> {{ song['emotion'] }}</p>
+              <!-- <p><strong>Path:</strong> {{ song['path'] }}</p> -->
+            </div>
+            <div class="action-buttons">
+              <a
+                href="{{ url_for('edit_song', song_id=song['id']) }}"
+                class="edit-btn"
+                >Edit</a
+              >
+              <form
+                method="POST"
+                action="{{ url_for('delete_song', song_id=song['id']) }}"
+                style="display: inline"
+              >
+                <button
+                  type="submit"
+                  class="delete-btn"
+                  onclick="return confirm('Are you sure you want to delete this song?');"
+                >
+                  Delete
+                </button>
+              </form>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <script>
+      function deleteSong(songId) {
+        if (confirm("Are you sure you want to delete this song?")) {
+          $.ajax({
+            url: "/admin/delete-song/" + songId,
+            type: "DELETE",
+            success: function (response) {
+              alert(response.message);
+              location.reload(); // Reload the page to update the song list
+            },
+            error: function (error) {
+              alert("Error: Unable to delete song.");
+              console.error(error);
+            },
+          });
+        }
+      }
+    </script>
+  </body>
+</html>
