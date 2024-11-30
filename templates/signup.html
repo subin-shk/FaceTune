@@ -74,6 +74,11 @@
           emailMsg.textContent = "Email is required.";
           emailMsg.style.display = "block";
           isValid = false;
+        } else if (!email.checkValidity()) {
+          emailMsg.textContent =
+            "Please enter a valid email address (e.g. example@domain.com).";
+          emailMsg.style.display = "block";
+          isValid = false;
         }
 
         // Password validation
@@ -153,6 +158,7 @@
             id="email"
             name="email"
             placeholder="Email"
+            pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
             required
           />
           <span id="email-msg" class="validation-message"></span>
