@@ -101,50 +101,80 @@ button:hover {
 
 #emotion {
   font-weight: bold;
-  color: #007bff;
+  color: #d35d46;
   font-size: 24px;
 }
-
+/* Styling for the song list items */
 #recsong-list {
-  list-style-type: none; /* Remove default bullet points */
+  list-style-type: none;
   padding: 0;
-  max-width: 600px; /* Max width for the list */
-  margin: auto; /* Center the list */
-  background: #fff; /* White background for the list */
-  border-radius: 10px; /* Rounded corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  margin: auto;
+  background: #fff;
+
+  min-width: 40vw;
 }
 
 #recsong-list li {
-  padding: 15px; /* Space within each list item */
-  border-bottom: 1px solid #e0e0e0; /* Light border between items */
-  transition: background-color 0.3s; /* Smooth transition for hover effect */
-  color: #000 !important;
+  display: flex;
+  justify-content: space-between; /* Distribute space between title and button */
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  transition: background-color 0.3s;
+  color: #000;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#recsong-list li a {
+  color: #000;
+  padding-left: 10px;
 }
 
 #recsong-list li:hover {
-  background-color: #e1e1e1; /* Light grey on hover */
+  background-color: #e1e1e1;
 }
 
 #recsong-list li:last-child {
-  border-bottom: none; /* Remove border from the last item */
+  border-bottom: none;
 }
 
-#recsong-list li::before {
-  content: "🎶"; /* Add a music note before each item */
-  margin-right: 10px; /* Space between the icon and text */
+.song-title {
+  flex-grow: 1; /* Ensures the title takes up the available space */
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.play-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.play-button:hover {
+  background-color: #218838;
 }
 
 @media (max-width: 600px) {
-  #recsong-list {
-    width: 100%; /* Full width on smaller screens */
+  #recsong-list li {
+    flex-direction: column;
+    align-items: flex-start;
   }
-}
 
-/* Additional Styling for Empty Song List */
-#recsong-list li.no-songs {
-  color: #000;
-  font-style: italic;
+  .song-title {
+    margin-bottom: 10px;
+  }
+
+  .play-button {
+    margin-left: 0;
+    margin-top: 10px;
+  }
 }
 
 /* Song List Styling for INDEX*/

@@ -188,7 +188,7 @@
               font-style: normal;
             "
           >
-            Detected Emotion: <span id="emotion"></span>
+            Detected Emotion: <i><span id="emotion"></span></i>
           </h2>
           <h3
             style="
@@ -196,6 +196,7 @@
               font-optical-sizing: auto;
               /* font-weight: <weight>; */
               font-style: normal;
+              margin-bottom: 20px;
             "
           >
             Recommended Songs:
@@ -301,7 +302,7 @@
             } else {
               songs.forEach((song) => {
                 const listItem = document.createElement("li");
-                listItem.innerHTML = `<a href="#" class="song-link" data-path="${song.path}" data-title="${song.title}">${song.title}</a>`;
+                listItem.innerHTML = `<strong><i class="bi bi-music-note-beamed"></i>&nbsp;<a href="#" class="song-link" data-path="${song.path}" data-title="${song.title}">${song.title}</a></strong><button class="play-button btn-secondary rounded-pill" style="margin-left:50px;" data-path="${song.path}" data-title="${song.title}">Play <i class="bi bi-play-fill"></i></button>`;
                 songList.appendChild(listItem);
               });
             }
@@ -315,6 +316,20 @@
       songList.addEventListener("click", (event) => {
         if (event.target.classList.contains("song-link")) {
           event.preventDefault();
+          const songPath = event.target.dataset.path;
+          const songTitle = event.target.dataset.title;
+          audioElement.src = `/static/${songPath}`;
+          nowPlayingTitle.textContent = songTitle;
+          audioPlayer.style.display = "flex";
+          audioElement
+            .play()
+            .catch((error) => console.error("Error playing audio:", error));
+        }
+      });
+
+      // Handle Play Button click
+      songList.addEventListener("click", (event) => {
+        if (event.target.classList.contains("play-button")) {
           const songPath = event.target.dataset.path;
           const songTitle = event.target.dataset.title;
           audioElement.src = `/static/${songPath}`;
