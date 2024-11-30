@@ -258,9 +258,13 @@ def edit_song(song_id):
         if request.method == "POST":
             title = request.form["title"]
             emotion = request.form["emotion"]
+            path = request.form["path"]  # Add form field for `path`
 
             try:
-                cursor.execute("UPDATE songs SET title = ?, emotion = ? WHERE id = ?", (title, emotion, song_id))
+                cursor.execute(
+                    "UPDATE songs SET title = ?, emotion = ?, path = ? WHERE id = ?",
+                    (title, emotion, path, song_id),
+                )
                 conn.commit()
                 flash("Song updated successfully.", "success")
                 return redirect(url_for("view_songs"))
@@ -270,7 +274,7 @@ def edit_song(song_id):
                 conn.close()
 
         else:  # GET request
-            cursor.execute("SELECT id, title, emotion FROM songs WHERE id = ?", (song_id,))
+            cursor.execute("SELECT id, title, emotion, path FROM songs WHERE id = ?", (song_id,))
             song = cursor.fetchone()  # Fetch the specific song as a dictionary
             conn.close()
 
@@ -282,6 +286,7 @@ def edit_song(song_id):
     else:
         flash("Access denied. Admins only.", "danger")
         return redirect(url_for("login"))
+
 
 
 @app.route("/admin/delete-song/<int:song_id>", methods=["POST"])

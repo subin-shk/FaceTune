@@ -91,7 +91,6 @@ h5 {
 .sidebar a:hover {
   background-color: rgb(192, 192, 192);
   color: #000;
-  transform: translateY(-5px) translateX(5px);
 }
 
 .sidebar a i {
@@ -403,4 +402,3 @@ h5 {
 .form-group label {
   width: 200px;
 }
-
