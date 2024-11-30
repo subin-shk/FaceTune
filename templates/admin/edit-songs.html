@@ -34,46 +34,78 @@
   <body>
     <!-- Sidebar -->
     <div class="sidebar">
-      <h2>Admin Panel</h2>
-      <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
-      <a href="{{ url_for('view_users') }}">View Users</a>
-      <a href="{{ url_for('view_songs') }}">View Songs</a>
-      <a href="{{ url_for('add_songs') }}">Add Songs</a>
-      <a class="dropdown-item" href="../logout" style="text-align: center"
-        >Logout&nbsp;&nbsp;<i class="bi bi-box-arrow-left"></i
+      <img
+        src="{{ url_for('static', filename='image/logo.png') }}"
+        alt="Face Tune"
+        class="sidebar-logo"
+      />
+      <h2 class="py-1 px-3">Admin Panel</h2>
+      <a href="{{ url_for('admin_dashboard') }}"
+        ><i class="bi bi-house-door-fill"></i>&nbsp;&nbsp;&nbsp;Dashboard</a
+      >
+      <a href="{{ url_for('view_users') }}"
+        ><i class="bi bi-people-fill"></i>&nbsp;&nbsp;&nbsp;View Users</a
+      >
+      <a href="{{ url_for('view_songs') }}"
+        ><i class="bi bi-file-music-fill"></i>&nbsp;&nbsp;&nbsp;View Songs</a
+      >
+      <a href="{{ url_for('add_songs') }}"
+        ><i class="bi bi-plus-square-fill"></i>&nbsp;&nbsp;&nbsp;Add Songs</a
+      >
+      <a href="../logout" style="margin-top: 65%"
+        >Logout&nbsp;&nbsp;&nbsp;<i class="bi bi-box-arrow-left"></i
       ></a>
     </div>
 
     <div class="container mt-5">
-      <h1>Edit Song</h1>
-      <form
-        method="POST"
-        action="{{ url_for('edit_song', song_id=song['id']) }}"
-      >
-        <div class="mb-3">
-          <label for="title" class="form-label">Song Title</label>
-          <input
-            type="text"
-            class="form-control"
-            id="title"
-            name="title"
-            value="{{ song['title'] }}"
-            required
-          />
+      <h1 class="subtitle mb-5">Edit Song</h1>
+      <div class="row justify-content-center">
+        <div
+          class="card shadow d-flex justify-content-center align-items-center flex-column mt-5"
+          style="min-height: 40vh"
+        >
+          <div class="card-body">
+            <form
+              method="POST"
+              action="{{ url_for('edit_song', song_id=song['id']) }}"
+            >
+              <div class="form-group d-flex align-items-center">
+                <label for="title" class="form-label">Song Title</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="title"
+                  name="title"
+                  value="{{ song['title'] }}"
+                  required
+                />
+              </div>
+              <div class="form-group d-flex align-items-center">
+                <label for="emotion" class="form-label">Emotion</label>
+                <select
+                class="form-control"
+                id="emotion"
+                name="emotion"
+                required
+                
+              >
+                <option value="" disabled>Select emotion</option>
+                <option value="happy" {% if song['emotion'] == 'happy' %}selected{% endif %}>Happy</option>
+                <option value="sad" {% if song['emotion'] == 'sad' %}selected{% endif %}>Sad</option>
+                <option value="angry" {% if song['emotion'] == 'angry' %}selected{% endif %}>Angry</option>
+                <option value="disgust" {% if song['emotion'] == 'disgust' %}selected{% endif %}>Disgust</option>
+                <option value="fear" {% if song['emotion'] == 'fear' %}selected{% endif %}>Fear</option>
+                <option value="neutral" {% if song['emotion'] == 'neutral' %}selected{% endif %}>Neutral</option>
+                <option value="surprise" {% if song['emotion'] == 'surprise' %}selected{% endif %}>Surprise</option>
+              </select>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Save Changes <i class="bi bi-floppy"></i>
+              </button>
+            </form>
+          </div>
         </div>
-        <div class="mb-3">
-          <label for="emotion" class="form-label">Emotion</label>
-          <input
-            type="text"
-            class="form-control"
-            id="emotion"
-            name="emotion"
-            value="{{ song['emotion'] }}"
-            required
-          />
-        </div>
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-      </form>
+      </div>
     </div>
   </body>
 </html>

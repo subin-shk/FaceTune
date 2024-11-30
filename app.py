@@ -130,8 +130,9 @@ def login():
                 session["user_type"] = user[0]  # Store user_type in session
                 flash("Login successful!", "success")
 
-                # Redirect based on user_type
+                # Check user type and redirect accordingly
                 if user[0] == "admin":
+                    flash("You have logged in as admin", "success")  # Flash message for admin
                     return redirect(url_for("admin_dashboard"))
                 else:
                     return redirect(url_for("index"))
@@ -142,6 +143,7 @@ def login():
             return redirect(url_for("login"))
 
     return render_template("login.html")
+
 
 
 @app.route("/admin/admin-dashboard")
@@ -179,10 +181,12 @@ def view_users():
             conn.row_factory = sqlite3.Row  # Return rows as dictionaries
             cursor = conn.cursor()
 
-            cursor.execute("SELECT user_id, username, email FROM user")
+            # Fetch user details, including user type
+            cursor.execute("SELECT user_id, username, email, user_type FROM user")
             users = cursor.fetchall()
             conn.close()
 
+            # Render the view-user template and pass the users list
             return render_template("admin/view-user.html", users=users)
         except sqlite3.Error as e:
             flash(f"Database error: {e}", "danger")
@@ -192,22 +196,27 @@ def view_users():
         return redirect(url_for("login"))
 
 
-@app.route("/admin/delete-user/<int:user_id>", methods=["DELETE"])
+@app.route("/admin/delete-user/<int:user_id>", methods=["POST"])
 def delete_user(user_id):
-    if session.get("user_type") == "admin":
-        try:
-            conn = sqlite3.connect("musicandface.db")
-            cursor = conn.cursor()
+    try:
+        conn = sqlite3.connect("musicandface.db")
+        cursor = conn.cursor()
 
-            cursor.execute("DELETE FROM user WHERE user_id = ?", (user_id,))
-            conn.commit()
-            conn.close()
+        cursor.execute("DELETE FROM user WHERE user_id = ?", (user_id,))
+        conn.commit()
+        conn.close()
 
-            return jsonify({"message": "User deleted successfully."}), 200
-        except sqlite3.Error as e:
-            return jsonify({"message": f"Error deleting user: {e}"}), 500
-    else:
-        return jsonify({"message": "Access denied."}), 403
+        # Flash a success message after deletion
+        flash("User deleted successfully!", "success")
+
+        # Redirect to the view_users route
+        return redirect(url_for('view_users')) 
+    except sqlite3.Error as e:
+        flash(f"Error deleting user: {e}", "danger")
+        return redirect(url_for('view_users'))
+   
+
+
 
 @app.route("/admin/view-songs")
 def view_songs():

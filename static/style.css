@@ -279,11 +279,7 @@ button:hover {
   left: 0;
   z-index: 99;
   width: 100%;
-  background: linear-gradient(
-    to bottom,
-    #d78373,
-    rgba(255, 255, 255, 0.8)
-  ); /* Peach to Light Gray */
+  background: linear-gradient(to bottom, #d78373, rgba(255, 255, 255, 0.8));
   /* box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15); */
 }
 

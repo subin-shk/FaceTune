@@ -31,26 +31,40 @@
   <body>
     <!-- Sidebar -->
     <div class="sidebar">
-      <h2>Admin Panel</h2>
-      <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
-      <a href="{{ url_for('view_users') }}">View Users</a>
-      <a href="{{ url_for('view_songs') }}">View Songs</a>
-      <a href="{{ url_for('add_songs') }}">Add Songs</a>
-      <a class="dropdown-item" href="../logout" style="text-align: center">
-        Logout&nbsp;&nbsp;<i class="bi bi-box-arrow-left"></i>
-      </a>
+      <img
+        src="{{ url_for('static', filename='image/logo.png') }}"
+        alt="Face Tune"
+        class="sidebar-logo"
+      />
+      <h2 class="py-1 px-3">Admin Panel</h2>
+      <a href="{{ url_for('admin_dashboard') }}"
+        ><i class="bi bi-house-door-fill"></i>&nbsp;&nbsp;&nbsp;Dashboard</a
+      >
+      <a href="{{ url_for('view_users') }}"
+        ><i class="bi bi-people-fill"></i>&nbsp;&nbsp;&nbsp;View Users</a
+      >
+      <a href="{{ url_for('view_songs') }}"
+        ><i class="bi bi-file-music-fill"></i>&nbsp;&nbsp;&nbsp;View Songs</a
+      >
+      <a href="{{ url_for('add_songs') }}"
+        ><i class="bi bi-plus-square-fill"></i>&nbsp;&nbsp;&nbsp;Add Songs</a
+      >
+      <a href="../logout" style="margin-top: 65%"
+        >Logout&nbsp;&nbsp;&nbsp;<i class="bi bi-box-arrow-left"></i
+      ></a>
     </div>
 
     <div class="container mt-5">
       <div class="row justify-content-center">
         <div class="col-md-6">
-          <div class="card shadow">
-            <div class="card-header text-center bg-primary text-white">
-              <h4>Add New Song</h4>
-            </div>
+          <h4 class="subtitle mb-5">Add New Song</h4>
+          <div
+            class="card shadow d-flex justify-content-center align-items-center flex-column"
+            style="min-height: 50vh"
+          >
             <div class="card-body">
               <form action="{{ url_for('add_songs') }}" method="POST">
-                <div class="form-group mb-3">
+                <div class="form-group d-flex align-items-center">
                   <label for="title">Song Title</label>
                   <input
                     type="text"
@@ -61,7 +75,7 @@
                     required
                   />
                 </div>
-                <div class="form-group mb-3">
+                <div class="form-group d-flex align-items-center">
                   <label for="emotion">Emotion</label>
                   <select
                     class="form-control"
@@ -79,7 +93,7 @@
                     <option value="surprise">Surprise</option>
                   </select>
                 </div>
-                <div class="form-group mb-3">
+                <div class="form-group d-flex align-items-center">
                   <label for="path">File Path</label>
                   <input
                     type="text"
@@ -90,7 +104,7 @@
                     required
                   />
                 </div>
-                <button type="submit" class="btn btn-success w-100">
+                <button type="submit" class="btn btn-primary w-100 mt-auto">
                   Add Song
                 </button>
               </form>

@@ -31,33 +31,86 @@
     />
   </head>
   <body>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <div class="alert-container">
+      {% for category, message in messages %}
+      <div
+        class="alert alert-{{ category }} alert-dismissible fade show"
+        role="alert"
+      >
+        {{ message }}
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
+
     <!-- Sidebar -->
     <div class="sidebar">
-      <h2>Admin Panel</h2>
-      <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
-      <a href="{{ url_for('view_users') }}">View Users</a>
-      <a href="{{ url_for('view_songs') }}">View Songs</a>
-      <a href="{{ url_for('add_songs') }}">Add Songs</a>
-      <a class="dropdown-item" href="../logout" style="text-align: center"
-        >Logout&nbsp;&nbsp;<i class="bi bi-box-arrow-left"></i
+      <img
+        src="{{ url_for('static', filename='image/logo.png') }}"
+        alt="Face Tune"
+        class="sidebar-logo"
+      />
+      <h2 class="py-1 px-3">Admin Panel</h2>
+      <a href="{{ url_for('admin_dashboard') }}"
+        ><i class="bi bi-house-door-fill"></i>&nbsp;&nbsp;&nbsp;Dashboard</a
+      >
+      <a href="{{ url_for('view_users') }}"
+        ><i class="bi bi-people-fill"></i>&nbsp;&nbsp;&nbsp;View Users</a
+      >
+      <a href="{{ url_for('view_songs') }}"
+        ><i class="bi bi-file-music-fill"></i>&nbsp;&nbsp;&nbsp;View Songs</a
+      >
+      <a href="{{ url_for('add_songs') }}"
+        ><i class="bi bi-plus-square-fill"></i>&nbsp;&nbsp;&nbsp;Add Songs</a
+      >
+      <a href="../logout" style="margin-top: 65%"
+        >Logout&nbsp;&nbsp;&nbsp;<i class="bi bi-box-arrow-left"></i
       ></a>
     </div>
 
-    <div class="container">
-      <h1 class="mb-4">View Users</h1>
-      <div id="user-list">
+    <div class="container my-5">
+      <h1 class="subtitle mb-4">View Users</h1>
+      <div id="user-list" class="d-flex flex-column align-items-center gap-3">
         {% for user in users %}
-        <div class="user-box">
+        <div class="user-box w-75">
           <div class="user-details">
             <p><strong>Username:</strong> {{ user['username'] }}</p>
             <p><strong>Email:</strong> {{ user['email'] }}</p>
+            <p><strong>User Type:</strong> {{ user['user_type'] }}</p>
           </div>
-          <button
-            class="delete-btn"
-            onclick="deleteUser({{ user['user_id'] }})"
+          {% if user['user_type'] != 'admin' %}
+          <!-- Show Delete Button for non-admin users -->
+
+          <form
+            method="POST"
+            action="{{ url_for('delete_user', user_id=user['user_id']) }}"
+            style="display: inline"
           >
-            Delete
-          </button>
+            <button
+              type="submit"
+              class="delete-btn"
+              onclick="return confirm('Are you sure you want to delete this user?');"
+            >
+              Delete <i class="bi bi-trash"></i>
+            </button>
+          </form>
+          {% else %}
+          <!-- Show Star Icon for admin users -->
+          <i
+            class="bi bi-star-fill text-warning fs-3 mt-2"
+            style="margin-right: 20px"
+          ></i>
+          {% endif %}
         </div>
         {% endfor %}
       </div>
@@ -66,17 +119,16 @@
     <script>
       function deleteUser(userId) {
         if (confirm("Are you sure you want to delete this user?")) {
-          // Make an AJAX request to delete the user
           $.ajax({
-            url: "/admin/delete-user/" + userId,
-            type: "DELETE",
+            url: "/admin/delete-user/" + userId, // Correct URL
+            type: "DELETE", // Make sure DELETE is used here
             success: function (response) {
-              alert(response.message);
-              location.reload(); // Reload the page to update the user list
+              alert(response.message); // Display success message
+              location.reload(); // Reload the page to reflect changes
             },
-            error: function (error) {
+            error: function (xhr, status, error) {
               alert("Error: Unable to delete user.");
-              console.error(error);
+              console.error(xhr.responseText); // Log detailed error info
             },
           });
         }

@@ -30,31 +30,104 @@
       href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Caveat:wght@400..700&family=Croissant+One&family=Kaushan+Script&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Merienda:wght@300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Satisfy&family=VT323&display=swap"
       rel="stylesheet"
     />
+
+
   </head>
   <body>
+    <!-- Popup container for login message -->
+    <div id="popup-message" class="popup hidden">
+      <div class="popup-content">
+        <span class="close-btn" onclick="closePopup()">&times;</span>
+        <p id="popup-text"></p>
+      </div>
+    </div>
+
     <!-- Sidebar -->
     <div class="sidebar">
-      <h2>Admin Panel</h2>
-      <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
-      <a href="{{ url_for('view_users') }}">View Users</a>
-      <a href="{{ url_for('view_songs') }}">View Songs</a>
-      <a href="{{ url_for('add_songs') }}">Add Songs</a>
-      <a class="dropdown-item" href="../logout" style="text-align: center"
-        >Logout&nbsp;&nbsp;<i class="bi bi-box-arrow-left"></i
+      <img
+        src="{{ url_for('static', filename='image/logo.png') }}"
+        alt="Face Tune"
+        class="sidebar-logo"
+      />
+      <h2 class="py-1 px-3">Admin Panel</h2>
+      <a href="{{ url_for('admin_dashboard') }}"
+        ><i class="bi bi-house-door-fill"></i>&nbsp;&nbsp;&nbsp;Dashboard</a
+      >
+      <a href="{{ url_for('view_users') }}"
+        ><i class="bi bi-people-fill"></i>&nbsp;&nbsp;&nbsp;View Users</a
+      >
+      <a href="{{ url_for('view_songs') }}"
+        ><i class="bi bi-file-music-fill"></i>&nbsp;&nbsp;&nbsp;View Songs</a
+      >
+      <a href="{{ url_for('add_songs') }}"
+        ><i class="bi bi-plus-square-fill"></i>&nbsp;&nbsp;&nbsp;Add Songs</a
+      >
+      <a href="../logout" style="margin-top: 65%"
+        >Logout&nbsp;&nbsp;&nbsp;<i class="bi bi-box-arrow-left"></i
       ></a>
     </div>
 
     <!-- Main Content -->
-    <div class="content">
-      <h1>Admin Dashboard</h1>
-      <p>
-        Welcome to the admin dashboard. Use the navigation bar to explore the
-        features.
+
+    <div class="container mt-5">
+      <h1 class="subtitle">Admin Dashboard</h1>
+      <p style="color: #000; margin-bottom: 50px; margin-top: 15px">
+        <i
+          >Welcome to the admin dashboard. Use the side navigation bar to
+          explore the features.</i
+        >
       </p>
-      <div class="dashboard-box">
-        <p><strong>Number of Users:</strong> {{ user_count }}</p>
-        <p><strong>Number of Songs:</strong> {{ song_count }}</p>
+
+      <div class="dashboard-stats">
+        <!-- User Count Box -->
+        <div class="stat-box">
+          <div class="stat-image">
+            <img
+              src="{{ url_for('static', filename='image/group-users.png') }}"
+              alt="Users"
+            />
+          </div>
+          <div class="stat-content">
+            <h3>Number of Users</h3>
+            <p><strong>{{ user_count }}</strong></p>
+          </div>
+        </div>
+
+        <!-- Song Count Box -->
+        <div class="stat-box">
+          <div class="stat-image">
+            <img
+              src="{{ url_for('static', filename='image/music.png') }}"
+              alt="Songs"
+            />
+          </div>
+          <div class="stat-content">
+            <h3>Number of Songs</h3>
+            <p><strong>{{ song_count }}</strong></p>
+          </div>
+        </div>
       </div>
     </div>
+
+    <script>
+      // Function to close the popup
+      function closePopup() {
+          document.getElementById('popup-message').classList.add('hidden');
+      }
+
+      // Function to show the popup with the message
+      function showPopup(message) {
+          document.getElementById('popup-text').innerText = message;
+          document.getElementById('popup-message').classList.remove('hidden');
+      }
+
+      // Trigger the popup if there's a flashed message
+      {% with messages = get_flashed_messages() %}
+          {% if messages %}
+              // Make sure to pass the message correctly in JavaScript
+              showPopup("{{ messages[0] }}");
+          {% endif %}
+      {% endwith %}
+    </script>
   </body>
 </html>
