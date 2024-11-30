@@ -139,7 +139,7 @@ h5 {
 
 .stat-box:hover {
   background: #ffffff;
-  transform: translateY(-5px);
+  transform: translateY(-5px) translateX(5px);
   transition: transform 0.3s ease, background 0.3s ease;
 }
 .stat-image img {
@@ -403,3 +403,4 @@ h5 {
 .form-group label {
   width: 200px;
 }
+
