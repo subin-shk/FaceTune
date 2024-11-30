@@ -319,7 +319,7 @@ def add_songs():
             conn.close()
 
             flash("Song added successfully!", "success")
-            return redirect(url_for("view_songs"))
+            return redirect(url_for("add_songs"))
         except sqlite3.Error as e:
             flash(f"Database error: {e}", "danger")
             return redirect(url_for("add_songs"))

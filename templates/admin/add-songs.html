@@ -26,6 +26,8 @@
       href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Caveat:wght@400..700&family=Croissant+One&family=Kaushan+Script&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Merienda:wght@300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Satisfy&family=VT323&display=swap"
       rel="stylesheet"
     />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <title>Add Song</title>
   </head>
   <body>
@@ -58,6 +60,38 @@
       <div class="row justify-content-center">
         <div class="col-md-6">
           <h4 class="subtitle mb-5">Add New Song</h4>
+
+          {% with messages = get_flashed_messages(with_categories=true) %} {% if
+          messages %}
+          <div class="alert-container" style="width: 40vw">
+            {% for category, message in messages %}
+            <div
+              class="alert alert-{{ category }} alert-dismissible fade show"
+              role="alert"
+            >
+              {{ message }}
+              <button
+                type="button"
+                class="close"
+                data-dismiss="alert"
+                aria-label="Close"
+                style="border: none; background: transparent; outline: none"
+              >
+                <span aria-hidden="true" style="font-size: 1.5rem"
+                  >&times;</span
+                >
+              </button>
+            </div>
+            <script>
+              // Use jQuery to automatically hide the alert after 3 seconds (3000ms)
+              setTimeout(function () {
+                $(".alert").fadeOut(500); // Fades out the alert in 500ms
+              }, 3000); // 3000ms = 3 seconds
+            </script>
+            {% endfor %}
+          </div>
+          {% endif %} {% endwith %}
+
           <div
             class="card shadow d-flex justify-content-center align-items-center flex-column"
             style="min-height: 50vh"
