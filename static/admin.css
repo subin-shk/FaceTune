@@ -15,33 +15,6 @@ h2,
 h5 {
   font-family: "Lato", sans-serif;
 }
-.popup {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.popup.hidden {
-  display: none;
-}
-
-.popup-content {
-  text-align: center;
-}
-
-.close-btn {
-  cursor: pointer;
-  font-size: 1.5em;
-  position: absolute;
-  top: 5px;
-  right: 10px;
-}
 
 /* Sidebar */
 
@@ -427,4 +400,59 @@ h5 {
   margin-left: 15px;
   font-size: 18px;
   font-weight: bold;
+}
+
+/* pop up FOR LOGIN SUCCESSFUL */
+
+/* Popup container */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Transparent black background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Hidden class to hide the popup initially */
+.hidden {
+  display: none;
+}
+
+/* Popup content box */
+.popup-content {
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 8px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 90%;
+  width: 400px;
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #333;
+}
+
+.close-btn:hover {
+  color: #f00;
+}
+
+/* Popup text */
+.popup-content p {
+  margin: 0;
+  font-size: 1rem;
+  color: #333;
 }

@@ -32,6 +32,7 @@
     />
   </head>
   <body>
+    <div class="popup-overlay"></div>
     <!-- Popup container for login message -->
     <div id="popup-message" class="popup hidden">
       <div class="popup-content">
@@ -108,23 +109,23 @@
     </div>
 
     <script>
-      // Function to close the popup
-      function closePopup() {
-          document.getElementById('popup-message').classList.add('hidden');
+        function showPopup(message) {
+        const popup = document.getElementById('popup-message');
+        const popupText = document.getElementById('popup-text');
+        popupText.textContent = message;
+        popup.classList.remove('hidden');
       }
 
-      // Function to show the popup with the message
-      function showPopup(message) {
-          document.getElementById('popup-text').innerText = message;
-          document.getElementById('popup-message').classList.remove('hidden');
+      // Function to close the popup
+      function closePopup() {
+        document.getElementById('popup-message').classList.add('hidden');
       }
 
       // Trigger the popup if there's a flashed message
       {% with messages = get_flashed_messages() %}
-          {% if messages %}
-              // Make sure to pass the message correctly in JavaScript
-              showPopup("{{ messages[0] }}");
-          {% endif %}
+        {% if messages %}
+          showPopup("{{ messages[0] }}");
+        {% endif %}
       {% endwith %}
     </script>
   </body>
