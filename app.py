@@ -128,13 +128,14 @@ def login():
             if user:
                 session["username"] = username
                 session["user_type"] = user[0]  # Store user_type in session
-                flash("Login successful!", "success")
+                # flash("Login successful!", "success")
 
                 # Check user type and redirect accordingly
                 if user[0] == "admin":
-                    flash("You have logged in as admin", "success")  # Flash message for admin
+                    flash("You have logged in as admin!", "success")  # Flash message for admin
                     return redirect(url_for("admin_dashboard"))
                 else:
+                    flash("Login successful!", "success")
                     return redirect(url_for("index"))
             else:
                 flash("Invalid username or password. Please try again.", "danger")
