@@ -52,9 +52,18 @@
       <a href="{{ url_for('add_songs') }}"
         ><i class="bi bi-plus-square-fill"></i>&nbsp;&nbsp;&nbsp;Add Songs</a
       >
-      <a href="../logout" style="margin-top: 65%"
+      <a href="../logout"
         >Logout&nbsp;&nbsp;&nbsp;<i class="bi bi-box-arrow-left"></i
       ></a>
+    </div>
+
+    <!-- Place audio player here -->
+    <div class="audio-player" id="audio-player" style="display: none">
+      <span class="now-playing" id="now-playing-title"></span>
+      <audio id="fixed-audio-player" controls>
+        <source src="" type="audio/mpeg" />
+        Your browser does not support the audio element.
+      </audio>
     </div>
 
     <div class="container my-5">
@@ -133,7 +142,16 @@
                   <h5>{{ song['title'] }}</h5>
                   <p><strong>Emotion:</strong> {{ song['emotion'] }}</p>
                 </div>
+
                 <div class="action-buttons">
+                  <!-- Play button and audio player -->
+                  <button
+                    class="btn btn-primary play-btn"
+                    onclick="playSong('{{ url_for('static', filename=song['path']) }}')"
+                  >
+                    Play <i class="bi bi-play-fill"></i>
+                  </button>
+
                   <a
                     href="{{ url_for('edit_song', song_id=song['id']) }}"
                     class="btn-secondary edit-btn"
@@ -220,6 +238,32 @@
             },
           });
         }
+      }
+
+      function playSong(songPath) {
+        const audioPlayer = document.getElementById("audio-player");
+        const audioElement = document.getElementById("fixed-audio-player");
+        const nowPlayingTitle = document.getElementById("now-playing-title");
+
+        // Stop any currently playing audio
+        document.querySelectorAll("audio").forEach((audio) => {
+          audio.pause();
+          audio.currentTime = 0;
+        });
+
+        // Update the audio source and title
+        audioElement.src = songPath;
+        audioElement.load();
+        audioElement.play();
+
+        // Extract and format the song name for display
+        const formattedTitle = decodeURIComponent(
+          songPath.split("/").pop().replace(".mp3", "").replace(/_/g, " ")
+        );
+        nowPlayingTitle.textContent = `${formattedTitle}`;
+
+        // Make sure the player is visible
+        audioPlayer.style.display = "flex";
       }
     </script>
   </body>

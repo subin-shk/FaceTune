@@ -204,7 +204,7 @@ h5 {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
-  margin: 20px 0;
+  margin: 25px 0;
   padding: 0 25px;
 }
 
@@ -285,7 +285,7 @@ h5 {
 
 .emotion-container {
   flex-grow: 1;
-  padding: 10px;
+  padding: 35px;
 }
 
 .song-container {
@@ -401,4 +401,29 @@ h5 {
 
 .form-group label {
   width: 200px;
+}
+
+/* Style for the fixed audio player */
+.audio-player {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
+  display: none; /* Hidden initially */
+  align-items: center;
+  justify-content: space-between;
+}
+
+.audio-player audio {
+  width: 80%;
+}
+.audio-player .now-playing {
+  margin-right: 10px;
+  margin-left: 15px;
+  font-size: 18px;
+  font-weight: bold;
 }
