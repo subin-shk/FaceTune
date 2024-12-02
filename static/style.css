@@ -660,11 +660,11 @@ button:hover {
 }
 
 #recommend-steps ol.alternating-colors li:nth-child(odd):before {
-  border-color: #0bad02;
+  border-color: #d35d46;
 }
 
 #recommend-steps ol.alternating-colors li:nth-child(even):before {
-  border-color: #2378d5;
+  border-color: #000;
 }
 
 /* FOR ALL SONGS IN INDEX */
