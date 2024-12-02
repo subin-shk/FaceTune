@@ -68,6 +68,8 @@
             <form
               method="POST"
               action="{{ url_for('edit_song', song_id=song['id']) }}"
+              onsubmit="return validateForm(event)"
+              novalidate
             >
               <div class="form-group d-flex align-items-center">
                 <label for="title" class="form-label">Song Title</label>
@@ -81,6 +83,7 @@
                   style="color: #000"
                 />
               </div>
+              <small id="title-msg" class="error-msg"></small>
               <div class="form-group d-flex align-items-center">
                 <label for="emotion" class="form-label">Emotion</label>
                 <select
@@ -100,8 +103,9 @@
                 <option value="surprise" {% if song['emotion'] == 'surprise' %}selected{% endif %}>Surprise</option>
               </select>
               </div>
+              <small id="emotion-msg" class="error-msg"></small>
               <div class="form-group d-flex align-items-center">
-                <label for="path" class="form-label">Path</label>
+                <label for="path" class="form-label">File Path</label>
                 <input
                   type="text"
                   class="form-control"
@@ -112,7 +116,8 @@
                   style="color: #000"
                 />
               </div>
-              <button type="submit" class="btn btn-primary">
+              <small id="path-msg" class="error-msg"></small>
+              <button type="submit" class="btn btn-primary w-100 mt-3">
                 Save Changes <i class="bi bi-floppy"></i>
               </button>
             </form>
@@ -120,5 +125,52 @@
         </div>
       </div>
     </div>
+
+    
+      
+      <script>
+      function validateForm(event) {
+        // Clear previous error messages
+        document.getElementById("title-msg").innerHTML = "";
+        document.getElementById("emotion-msg").innerHTML = "";
+        document.getElementById("path-msg").innerHTML = "";
+
+        var title = document.getElementById("title").value;
+        var emotion = document.getElementById("emotion").value;
+        var path = document.getElementById("path").value;
+
+        var isValid = true;
+
+        // Validate Title
+        if (title === "") {
+          document.getElementById("title-msg").innerHTML =
+            "Please enter the song title.";
+          isValid = false;
+        }
+
+        // Validate Emotion
+        if (emotion === "") {
+          document.getElementById("emotion-msg").innerHTML =
+            "Please select an emotion.";
+          isValid = false;
+        }
+
+        // Validate Path
+        if (path === "") {
+          document.getElementById("path-msg").innerHTML =
+            "Please enter the path file.";
+          isValid = false;
+        }
+
+        // If the form is not valid, prevent submission
+        if (!isValid) {
+          event.preventDefault();
+        }
+
+        return isValid;
+      }
+    </script>
+
+    
   </body>
 </html>

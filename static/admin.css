@@ -259,7 +259,8 @@ h5 {
 
 .emotion-container {
   flex-grow: 1;
-  padding: 35px;
+  padding: 15px;
+  margin-bottom: 50px;
 }
 
 .song-container {
@@ -365,12 +366,13 @@ h5 {
 
 .card {
   width: 40vw;
-  padding: 50px;
+  padding: 25px;
 }
 
 .form-group {
   width: 35vw;
-  margin-bottom: 5vh;
+  margin-top: 25px;
+  margin-bottom: 5px;
 }
 
 .form-group label {
@@ -455,4 +457,8 @@ h5 {
   margin: 0;
   font-size: 1rem;
   color: #333;
+}
+
+.error-msg {
+  color: red;
 }

@@ -311,9 +311,24 @@ def delete_song(song_id):
 @app.route("/admin/add-song", methods=["GET", "POST"])
 def add_songs():
     if request.method == "POST":
-        title = request.form["title"]
-        emotion = request.form["emotion"]
-        path = request.form["path"]
+        title = request.form.get("title")
+        emotion = request.form.get("emotion")
+        path = request.form.get("path")
+
+        # Validate the 'title' field
+        if not title:
+            flash("Title is required!", "danger")
+            return redirect(url_for("add_songs"))
+
+        # Validate the 'emotion' field
+        if not emotion:
+            flash("Emotion is required!", "danger")
+            return redirect(url_for("add_songs"))
+
+        # Validate the 'path' field (check if not empty)
+        if not path:
+            flash("Path is required!", "danger")
+            return redirect(url_for("add_songs"))
 
         try:
             conn = sqlite3.connect("musicandface.db")
@@ -330,6 +345,7 @@ def add_songs():
             return redirect(url_for("add_songs"))
 
     return render_template("admin/add-songs.html")
+
 
 
 
