@@ -104,6 +104,28 @@
                 <a href="/recommend" class="active">Recommend</a>
               </li>
             </ul>
+            <ul class="navbar-nav">
+              <li>
+                <div class="search-box" style="margin-right: 30px">
+                  <form
+                    action="{{ url_for('search') }}"
+                    method="GET"
+                    id="searchForm"
+                  >
+                    <button type="button" class="btn-search" id="searchBtn">
+                      <i class="bi bi-search"></i>
+                    </button>
+                    <input
+                      type="text"
+                      class="input-search"
+                      name="query"
+                      placeholder="Type to Search..."
+                      id="inputSearch"
+                    />
+                  </form>
+                </div>
+              </li>
+            </ul>
             <!-- Login on the right -->
             <ul class="navbar-nav ml-auto">
               {% if session.get('username') %}
@@ -147,6 +169,44 @@
       </div>
       <!-- /.container -->
     </header>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const searchBtn = document.getElementById("searchBtn");
+        const inputSearch = document.getElementById("inputSearch");
+        const searchForm = document.getElementById("searchForm");
+        let isInputOpened = false;
+
+        searchBtn.addEventListener("click", function () {
+          // If input is not open, open it
+          if (!isInputOpened) {
+            inputSearch.style.width = "300px"; // Open the input field
+            inputSearch.focus();
+            isInputOpened = true;
+          } else {
+            // If input is already open, submit the form
+            searchForm.submit();
+          }
+        });
+
+        inputSearch.addEventListener("blur", function () {
+          // If the input is empty, close it when losing focus
+          if (inputSearch.value === "") {
+            inputSearch.style.width = "50px"; // Collapse the input field back
+            isInputOpened = false;
+          }
+        });
+
+        // Allow reopening the input by clicking the search button again
+        inputSearch.addEventListener("focus", function () {
+          // Make sure the input is open if it's clicked back into
+          if (!isInputOpened) {
+            inputSearch.style.width = "300px";
+            isInputOpened = true;
+          }
+        });
+      });
+    </script>
 
     <!-- Main Content -->
     <section class="container" style="padding-top: 130px; min-height: 90vh">

@@ -68,6 +68,32 @@ def preprocess_image(image):
 def index():
     return render_template("index.html")  # Serve index.html
 
+# Function to search for songs in the database
+def search_songs(query):
+    # Connect to the database
+    conn = sqlite3.connect('musicandface.db')
+    cursor = conn.cursor()
+
+    # Search for songs whose title contains the query (case-insensitive)
+    cursor.execute("SELECT title, emotion, path FROM songs WHERE title LIKE ?", ('%' + query + '%',))
+    results = cursor.fetchall()
+
+    # Close the connection
+    conn.close()
+
+    return results
+
+@app.route('/search', methods=['GET'])
+def search():
+    query = request.args.get('query', '')  # Get the search query
+    results = []
+
+    if query:
+        results = search_songs(query)  # Fetch matching songs from the database
+
+    return render_template('search.html', query=query, results=results)
+
+
 @app.route("/recommend")
 def recommend():
     # Check if the user is logged in

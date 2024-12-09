@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FaceTune - Home</title>
+    <title>FaceTune - Search Results</title>
     <link rel="stylesheet" href="../static/style.css" />
     <link rel="stylesheet" href="../static/bootstrap.min.css" />
 
@@ -22,10 +22,9 @@
     />
 
     <!-- Bootstrap JS and dependencies -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <!--Google fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -59,10 +58,10 @@
           <div class="collapse navbar-collapse" id="mainMenu">
             <ul class="navbar-nav mx-auto d-flex justify-content-center w-100">
               <li>
-                <a href="/">Home</a>
+                <a href="/" class="active active-first">Home</a>
               </li>
               <li>
-                <a href="/about" class="active">About</a>
+                <a href="/about">About</a>
               </li>
               <li>
                 <a href="/recommend">Recommend</a>
@@ -90,6 +89,7 @@
                 </div>
               </li>
             </ul>
+
             <!-- Login on the right -->
             <ul class="navbar-nav ml-auto">
               {% if session.get('username') %}
@@ -172,64 +172,44 @@
       });
     </script>
 
-    <section id="about" class="container-fluid">
-      <div class="row">
-        <div class="col-md-6">
-          <h2 class="text-left subtitle">About Us</h2>
-          <div class="mt-4" style="padding: 15px; font-size: 20px; ">
-            <p>
-              At FaceTune, we believe that music is a universal language capable
-              of expressing a myriad of emotions. Our innovative music
-              recommendation system harnesses the power of facial expression
-              analysis to curate personalized playlists that perfectly match
-              your current mood.
-            </p>
-            <p>With FaceTune, every emotion has its own soundtrack. Whether you're feeling joyful, relaxed, or sad, our system detects your mood and recommends the perfect tracks to elevate your experience. Let your face be the key to unlocking the music that speaks to your soul!</p>
+    <section
+      class="container search-container d-flex justify-content-center flex-column"
+      style="margin-top: 100px; margin-bottom: 0; width: 50vw"
+    >
+      <h1 class="mb-5">Search Results for: "{{ query }}"</h1>
 
-            <p>
-              Join us on this exciting musical journey and discover how your
-              emotions can shape your unique music experience with FaceTune!
-            </p>
+      {% if results %}
+      <div class="song-list" style="min-height: 70vh">
+        {% for song in results %}
+        <div class="song-item">
+          <div class="song-info">
+            <i class="bi bi-music-note-beamed"></i>&nbsp;&nbsp;&nbsp;<span
+              >{{ song[0] }}</span
+            >
           </div>
-</a>
+          <button
+            class="play-button btn-secondary rounded-pill"
+            data-song="{{ url_for('static', filename=song[2]) }}"
+            data-title="{{ song[0] }}"
+          >
+            Play&nbsp;&nbsp; <i class="bi bi-play-fill"></i>
+          </button>
         </div>
-        <div class="col-md-6">
-          <img
-            src="{{ url_for('static', filename='image/about-girl.png') }}"
-            class="img-fluid mb-3 pt-5"
-            style="filter: grayscale(50%); height: 550px; border-radius: 20%; "
-            alt="Music Experience"
-          />
-        </div>
+        {% endfor %}
       </div>
+      {% else %}
+      <p>No results found for "{{ query }}".</p>
+      {% endif %}
     </section>
 
-    <section id="recommend-steps" class=" container">
-      <h1 class="subtitle">Steps to get Music Recommendations <br> Based on Your Emotion</h1>
-      <ol class="alternating-colors">
-        <li>
-          <strong>Make sure you are logged in<br><p>Click here to <a href="/login">Login</a>.</p></strong>
-          
-        </li>
-        
-        <li>
-          <strong>Navigate to Recommend Page <br> <p>Click here to go to <a href="/recommend">Recommend</a>.</p></strong>
-          
-        </li>
-        
-        <li>
-          <strong>Open Camera <br> <p>Make sure you allow your browser to access the camera.</p></strong>
-          
-        </li>
-        
-        <li>
-          <strong>Detect Emotion and get Music Recommendations <br> <p>Make sure you have proper lighting and adjust your position accordingly.</p> </strong>
-          
-        </li>
-        
-      </ol>
-    </section>
-    
+    <!-- Fixed Audio Player -->
+
+    <div id="audio-player">
+      <span class="now-playing">
+        <span id="now-playing-title"></span>
+      </span>
+      <audio id="audio-player-element" controls></audio>
+    </div>
 
     <footer class="bg-dark text-white text-center py-3">
       <p style="padding-bottom: 70px">
@@ -237,5 +217,30 @@
       </p>
     </footer>
 
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const playButtons = document.querySelectorAll(".play-button");
+        const audioPlayer = document.getElementById("audio-player");
+        const audioElement = document.getElementById("audio-player-element");
+        const nowPlayingTitle = document.getElementById("now-playing-title");
+
+        playButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            const songPath = button.dataset.song;
+            const songTitle = button.dataset.title;
+
+            // Set the audio source and title
+            audioElement.src = songPath;
+            nowPlayingTitle.textContent = songTitle;
+
+            // Show the audio player and start playing
+            audioPlayer.style.display = "flex";
+            audioElement
+              .play()
+              .catch((error) => console.error("Error playing audio:", error));
+          });
+        });
+      });
+    </script>
   </body>
 </html>
