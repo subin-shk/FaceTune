@@ -415,11 +415,6 @@ def get_songs():
     emotion = request.args.get("emotion")
     songs = []
 
-    # try:
-    #     conn = sqlite3.connect("musicandface.db")
-    #     cursor = conn.cursor()
-        
-        # cursor.execute("SELECT title, path FROM songs WHERE emotion=?", (emotion,))
     try:
         conn = sqlite3.connect("musicandface.db")
         cursor = conn.cursor()
